@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
+import { motion } from "framer-motion";
 import { useState } from "react";
 
 const geistSans = Geist({
@@ -11,6 +12,11 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+const containerVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
+};
 
 export default function Home() {
   const [userId, setUserId] = useState("");
@@ -26,44 +32,48 @@ export default function Home() {
   };
 
   return (
-    <div
-      className={`${geistSans.className} ${geistMono.className} flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black`}
+    <motion.div
+      className={`${geistSans.className} ${geistMono.className} min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center`}
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
     >
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+      <motion.h1
+        className="text-5xl font-extrabold mb-6 text-center"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        Sunucu Özetin Hazır
+      </motion.h1>
+      <motion.p
+        className="text-lg mb-8 text-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.8 }}
+      >
+        Discord’daki yolculuğunu keşfet.
+      </motion.p>
+      <motion.div
+        className="flex flex-col items-center"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8, duration: 0.8 }}
+      >
+        <input
+          type="text"
+          placeholder="Discord User ID"
+          value={userId}
+          onChange={handleInputChange}
+          className="p-3 rounded bg-gray-800 text-white mb-4 w-64 text-center"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            Sunucu Özetin hazır.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Discord’daki yolculuğunu keşfet.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <div className="flex flex-col items-center">
-            <input
-              type="text"
-              placeholder="Discord User ID"
-              value={userId}
-              onChange={handleInputChange}
-              className="p-2 rounded bg-gray-800 text-white mb-4"
-            />
-            <button
-              onClick={handleSubmit}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-            >
-              Özetini Gör
-            </button>
-          </div>
-        </div>
-      </main>
-    </div>
+        <button
+          onClick={handleSubmit}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded shadow-lg"
+        >
+          Özetini Gör
+        </button>
+      </motion.div>
+    </motion.div>
   );
 }
