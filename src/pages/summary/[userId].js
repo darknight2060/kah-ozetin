@@ -692,7 +692,167 @@ export default function SummaryPage({ userData }) {
         </motion.div>
       </motion.div>
 
-      {/* Section 6: Share */}
+      {/* Section 6: Leaderboard */}
+      <motion.div
+        className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.3 }}
+        variants={containerVariants}
+      >
+        <motion.div
+          className="absolute inset-0 opacity-5"
+          animate={{
+            background: [
+              'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)',
+              'radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 70%)',
+              'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)',
+            ],
+          }}
+          transition={{ duration: 10, repeat: Infinity }}
+        />
+
+        <div className="relative z-10 max-w-5xl px-8 w-full">
+          <motion.h2
+            className="text-5xl font-black mb-16 text-center bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
+            variants={itemVariants}
+          >
+            Sıralamada Yerin
+          </motion.h2>
+
+          {userData.leaderboard && (
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-3 gap-8"
+              variants={containerVariants}
+            >
+              {/* Mesaj Sayısı */}
+              <motion.div
+                className="bg-gradient-to-br from-blue-900 to-blue-800 p-8 rounded-2xl border border-blue-500 border-opacity-30"
+                variants={itemVariants}
+              >
+                <div className="text-center mb-8">
+                  <p className="text-2xl text-gray-300 mb-2">💬 Mesaj Sayısı</p>
+                  <p className="text-5xl font-black text-blue-300">#{userData.leaderboard.message_count.userRank}</p>
+                  <p className="text-sm text-gray-400 mt-2">{formatNumber(userData.leaderboard.message_count.userValue)} mesaj</p>
+                </div>
+
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {userData.leaderboard.message_count.context.map((item) => (
+                    <motion.div
+                      key={item.user_id}
+                      className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                        item.isUser
+                          ? 'bg-blue-700 border border-blue-400'
+                          : 'bg-gray-700 hover:bg-gray-600'
+                      }`}
+                      whileHover={{ x: 5 }}
+                    >
+                      <span className="text-lg font-bold text-gray-300 w-6 text-right">#{item.rank}</span>
+                      {item.user?.avatar_url && (
+                        <Image
+                          src={item.user.avatar_url.replace('?size=512', '?size=32')}
+                          alt={item.user.username}
+                          width={32}
+                          height={32}
+                          className="rounded-full"
+                        />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-white truncate">{item.user?.username || 'Unknown'}</p>
+                      </div>
+                      <p className="text-sm font-bold text-gray-300">{formatNumber(item.value)}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Aktif Günler */}
+              <motion.div
+                className="bg-gradient-to-br from-purple-900 to-purple-800 p-8 rounded-2xl border border-purple-500 border-opacity-30"
+                variants={itemVariants}
+              >
+                <div className="text-center mb-8">
+                  <p className="text-2xl text-gray-300 mb-2">📅 Aktif Günler</p>
+                  <p className="text-5xl font-black text-purple-300">#{userData.leaderboard.active_days.userRank}</p>
+                  <p className="text-sm text-gray-400 mt-2">{userData.leaderboard.active_days.userValue} gün</p>
+                </div>
+
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {userData.leaderboard.active_days.context.map((item) => (
+                    <motion.div
+                      key={item.user_id}
+                      className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                        item.isUser
+                          ? 'bg-purple-700 border border-purple-400'
+                          : 'bg-gray-700 hover:bg-gray-600'
+                      }`}
+                      whileHover={{ x: 5 }}
+                    >
+                      <span className="text-lg font-bold text-gray-300 w-6 text-right">#{item.rank}</span>
+                      {item.user?.avatar_url && (
+                        <Image
+                          src={item.user.avatar_url.replace('?size=512', '?size=32')}
+                          alt={item.user.username}
+                          width={32}
+                          height={32}
+                          className="rounded-full"
+                        />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-white truncate">{item.user?.username || 'Unknown'}</p>
+                      </div>
+                      <p className="text-sm font-bold text-gray-300">{formatNumber(item.value)}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Ort. Mesaj Uzunluğu */}
+              <motion.div
+                className="bg-gradient-to-br from-pink-900 to-pink-800 p-8 rounded-2xl border border-pink-500 border-opacity-30"
+                variants={itemVariants}
+              >
+                <div className="text-center mb-8">
+                  <p className="text-2xl text-gray-300 mb-2">📝 Ort. Mesaj Uzunluğu</p>
+                  <p className="text-5xl font-black text-pink-300">#{userData.leaderboard.avg_message_length.userRank}</p>
+                  <p className="text-sm text-gray-400 mt-2">{userData.leaderboard.avg_message_length.userValue} karakter</p>
+                </div>
+
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {userData.leaderboard.avg_message_length.context.map((item) => (
+                    <motion.div
+                      key={item.user_id}
+                      className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                        item.isUser
+                          ? 'bg-pink-700 border border-pink-400'
+                          : 'bg-gray-700 hover:bg-gray-600'
+                      }`}
+                      whileHover={{ x: 5 }}
+                    >
+                      <span className="text-lg font-bold text-gray-300 w-6 text-right">#{item.rank}</span>
+                      {item.user?.avatar_url && (
+                        <Image
+                          src={item.user.avatar_url.replace('?size=512', '?size=32')}
+                          alt={item.user.username}
+                          width={32}
+                          height={32}
+                          className="rounded-full"
+                        />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-white truncate">{item.user?.username || 'Unknown'}</p>
+                      </div>
+                      <p className="text-sm font-bold text-gray-300">{formatNumber(item.value)}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </div>
+      </motion.div>
+
+      {/* Section 7: Share */}
       <motion.div
         id="summary-section"
         className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"

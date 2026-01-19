@@ -19,11 +19,12 @@ async function loadJsonData(filename) {
  * Get user summary - combines all data sources for a specific user
  */
 export async function getUserSummary(userId) {
-  const [users, stats, social, rankings] = await Promise.all([
+  const [users, stats, social, rankings, leaderboardContext] = await Promise.all([
     loadJsonData('users.json'),
     loadJsonData('user_stats.json'),
     loadJsonData('user_social.json'),
     loadJsonData('rankings.json'),
+    getUserRankingsWithContext(userId, 5),
   ]);
 
   if (!users || !users[userId]) {
@@ -42,6 +43,7 @@ export async function getUserSummary(userId) {
     stats: userStats,
     social: userSocial,
     rankings: rankings_data,
+    leaderboard: leaderboardContext,
   };
 }
 
@@ -142,4 +144,78 @@ export async function getAllRankings() {
 export async function getUsersForLeaderboard() {
   const users = await loadJsonData('users.json');
   return users || {};
+}
+
+/**
+ * Get user rankings with surrounding context (rank ±2)
+ */
+export async function getUserRankingsWithContext(userId, limit = 5) {
+  const [stats, users] = await Promise.all([
+    loadJsonData('user_stats.json'),
+    loadJsonData('users.json'),
+  ]);
+
+  if (!stats || !users) return null;
+
+  const userIds = Object.keys(stats);
+
+  // Build message count ranking
+  const messageCountRanking = userIds
+    .map(id => ({
+      user_id: id,
+      value: stats[id].total || 0,
+    }))
+    .sort((a, b) => b.value - a.value);
+
+  // Build active days ranking
+  const activeDaysRanking = userIds
+    .map(id => ({
+      user_id: id,
+      value: stats[id].active_days || 0,
+    }))
+    .sort((a, b) => b.value - a.value);
+
+  // Build average message length ranking
+  const avgLengthRanking = userIds
+    .map(id => ({
+      user_id: id,
+      value: stats[id].total > 0 ? Number((stats[id].len_sum / stats[id].total).toFixed(1)) : 0,
+    }))
+    .sort((a, b) => b.value - a.value);
+
+  // Find user's position in each ranking
+  const messageCountIndex = messageCountRanking.findIndex(item => item.user_id === userId);
+  const activeDaysIndex = activeDaysRanking.findIndex(item => item.user_id === userId);
+  const avgLengthIndex = avgLengthRanking.findIndex(item => item.user_id === userId);
+
+  // Get context (surrounding entries)
+  const getContext = (ranking, userIndex, count = 5) => {
+    if (userIndex === -1) return [];
+    const start = Math.max(0, userIndex - Math.floor(count / 2));
+    const end = Math.min(ranking.length, start + count);
+    return ranking.slice(start, end).map((item, idx) => ({
+      ...item,
+      rank: start + idx + 1,
+      isUser: item.user_id === userId,
+      user: users[item.user_id],
+    }));
+  };
+
+  return {
+    message_count: {
+      userRank: messageCountIndex + 1,
+      userValue: messageCountIndex !== -1 ? messageCountRanking[messageCountIndex].value : 0,
+      context: getContext(messageCountRanking, messageCountIndex, limit),
+    },
+    active_days: {
+      userRank: activeDaysIndex + 1,
+      userValue: activeDaysIndex !== -1 ? activeDaysRanking[activeDaysIndex].value : 0,
+      context: getContext(activeDaysRanking, activeDaysIndex, limit),
+    },
+    avg_message_length: {
+      userRank: avgLengthIndex + 1,
+      userValue: avgLengthIndex !== -1 ? avgLengthRanking[avgLengthIndex].value : 0,
+      context: getContext(avgLengthRanking, avgLengthIndex, limit),
+    },
+  };
 }
