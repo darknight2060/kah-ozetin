@@ -201,6 +201,14 @@ export default function SummaryPage({ userData }) {
           0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
           50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6); }
         }
+        @keyframes gradient-shift {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        @keyframes float-up {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
         .aurora-bg {
           background: linear-gradient(-45deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1), rgba(59, 130, 246, 0.1));
           background-size: 400% 400%;
@@ -209,34 +217,81 @@ export default function SummaryPage({ userData }) {
         .glow-text {
           animation: pulse-glow 3s ease-in-out infinite;
         }
+        .glassmorphism {
+          background: rgba(255, 255, 255, 0.05);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-border {
+          background-image: linear-gradient(to right, #3b82f6, #a855f7, #ec4899);
+          padding: 3px;
+          border-radius: 999px;
+        }
+        .gradient-border img {
+          border-radius: 999px;
+        }
         /* Custom scrollbar styling */
         .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
+          width: 8px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(55, 65, 81, 0.3);
+          background: rgba(55, 65, 81, 0.2);
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(59, 130, 246, 0.5);
+          background: linear-gradient(to bottom, #3b82f6, #a855f7);
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(59, 130, 246, 0.8);
+          background: linear-gradient(to bottom, #60a5fa, #c084fc);
+        }
+        .stat-card {
+          background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%);
+          border: 1px solid rgba(59, 130, 246, 0.2);
+          transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+          border-color: rgba(59, 130, 246, 0.5);
+          background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(168, 85, 247, 0.1) 100%);
         }
       `}</style>
 
-      {/* Section 1: Welcome */}
+      {/* Header / Navigation */}
       <motion.div
-        className="min-h-screen h-screen flex flex-col items-center justify-center relative overflow-hidden aurora-bg py-20"
+        className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-gray-800 border-opacity-50"
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+          <motion.a
+            href="/"
+            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+            whileHover={{ x: -5 }}
+          >
+            <span className="text-2xl">←</span>
+            <span className="hidden sm:inline">Ana Sayfa</span>
+          </motion.a>
+          <div className="text-center flex-1">
+            <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              {user.username}
+            </h2>
+          </div>
+          <div className="w-20 sm:w-auto" />
+        </div>
+      </motion.div>
+
+      {/* Hero Section */}
+      <motion.div
+        className="min-h-screen pt-32 pb-20 flex flex-col items-center justify-center relative overflow-hidden aurora-bg"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={containerVariants}
       >
-        {/* Floating background elements */}
+        {/* Animated background blobs */}
         <motion.div
-          className="absolute top-20 left-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 z-0"
+          className="absolute top-20 left-10 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-15 z-0"
           animate={{
             y: [0, 50, 0],
             x: [0, 30, 0],
@@ -244,7 +299,7 @@ export default function SummaryPage({ userData }) {
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute bottom-0 right-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 z-0"
+          className="absolute bottom-0 right-10 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-15 z-0"
           animate={{
             y: [0, -50, 0],
             x: [0, -30, 0],
@@ -252,655 +307,539 @@ export default function SummaryPage({ userData }) {
           transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        <motion.div
-          className="relative z-20"
-          variants={floatingVariants}
-          animate="float"
-        >
-          {user.avatar_url && (
-            <motion.div
-              className="glow-text rounded-full overflow-hidden"
-              whileHover={{ scale: 1.1 }}
-              transition={{ type: 'spring', stiffness: 300 }}
-            >
-              <Image
-                src={user.avatar_url}
-                alt="User Avatar"
-                width={180}
-                height={180}
-                className="rounded-full mb-4 border-4 border-blue-500 shadow-2xl"
-              />
+        <div className="relative z-20 space-y-8">
+          {/* Avatar with gradient border */}
+          <motion.div
+            className="flex justify-center"
+            variants={floatingVariants}
+            animate="float"
+          >
+            {user.avatar_url && (
+              <motion.div
+                className="gradient-border"
+                whileHover={{ scale: 1.08 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <Image
+                  src={user.avatar_url}
+                  alt="User Avatar"
+                  width={200}
+                  height={200}
+                  className="w-48 h-48 md:w-56 md:h-56"
+                  priority
+                />
+              </motion.div>
+            )}
+          </motion.div>
+
+          {/* Username and display name */}
+          <motion.div
+            className="text-center space-y-4"
+            variants={itemVariants}
+          >
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              {user.username}
+            </h1>
+            <p className="text-xl sm:text-2xl md:text-3xl text-gray-400 font-light">
+              Sunucudaki Hikâyen
+            </p>
+          </motion.div>
+
+          {/* Quick stats preview */}
+          <motion.div
+            className="grid grid-cols-3 gap-4 mt-8"
+            variants={containerVariants}
+          >
+            <motion.div className="text-center" variants={itemVariants}>
+              <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-400">{formatNumber(stats.total)}</p>
+              <p className="text-xs sm:text-sm text-gray-400 mt-2">Mesaj</p>
             </motion.div>
-          )}
-        </motion.div>
-
-        <motion.h1
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-center mb-2 sm:mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent px-4"
-          variants={itemVariants}
-        >
-          {user.username}
-        </motion.h1>
-
-        <motion.p
-          className="text-lg sm:text-xl md:text-2xl text-gray-400 mt-2 sm:mt-4 font-light px-4"
-          variants={itemVariants}
-        >
-          @{user.username}
-        </motion.p>
-
-        <motion.p
-          className="text-base sm:text-lg md:text-xl text-gray-500 mt-4 sm:mt-8 max-w-2xl text-center px-4"
-          variants={itemVariants}
-        >
-          Sunucudaki hikâyen burada başlıyor
-        </motion.p>
+            <motion.div className="text-center" variants={itemVariants}>
+              <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-purple-400">{stats.active_days}</p>
+              <p className="text-xs sm:text-sm text-gray-400 mt-2">Gün</p>
+            </motion.div>
+            <motion.div className="text-center" variants={itemVariants}>
+              <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-pink-400">{avgMessageLength}</p>
+              <p className="text-xs sm:text-sm text-gray-400 mt-2">Karakter</p>
+            </motion.div>
+          </motion.div>
+        </div>
       </motion.div>
 
-      {/* Section 2: Volume */}
-      <motion.div
-        className="min-h-screen h-screen flex items-center justify-center relative overflow-hidden py-20"
+      {/* Key Metrics Grid */}
+      <motion.section
+        className="relative py-20 px-4 sm:px-6 lg:px-8"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={containerVariants}
       >
-        <motion.div
-          className="absolute inset-0 opacity-10"
-          animate={{
-            backgroundPosition: ['0% 0%', '100% 100%'],
-          }}
-          transition={{ duration: 20, repeat: Infinity }}
-        />
-
-        <div className="relative z-10 text-center">
-          <motion.div
-            initial={{ scale: 0 }}
-            whileInView={{ scale: 1 }}
-            transition={{ duration: 0.8, type: 'spring' }}
-            className="mb-8"
-          >
-            <div className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-blue-400 glow-text">
-              {formatNumber(stats.total)}
-            </div>
-          </motion.div>
-
+        <div className="max-w-6xl mx-auto">
           <motion.h2
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-2 sm:mb-4"
-            variants={slideInVariants}
+            className="text-4xl sm:text-5xl font-black text-center mb-16 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent"
+            variants={itemVariants}
           >
-            Toplam <span className="text-accent text-blue-400">Mesaj</span> Gönderdin
+            Temel Metriklerin
           </motion.h2>
-        </div>
-      </motion.div>
 
-      {/* Section 3: Time */}
-      <motion.div
-        className="min-h-screen h-screen flex flex-col items-center justify-center relative overflow-hidden py-20"
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-4 gap-6"
+            variants={containerVariants}
+          >
+            {/* Total Messages */}
+            <motion.div
+              className="md:col-span-2 stat-card p-8 rounded-2xl backdrop-blur-sm"
+              variants={itemVariants}
+              whileHover={{ y: -5 }}
+            >
+              <p className="text-gray-400 text-lg mb-4">📊 Toplam Mesaj</p>
+              <p className="text-6xl sm:text-7xl font-black bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">
+                {formatNumber(stats.total)}
+              </p>
+              <p className="text-gray-500 text-sm mt-4">
+                {formatNumber(stats.active_days)} gün içinde gönderdin
+              </p>
+            </motion.div>
+
+            {/* Most Active Hour */}
+            <motion.div
+              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+              variants={itemVariants}
+              whileHover={{ y: -5 }}
+            >
+              <p className="text-gray-400 text-sm mb-4">🕐 En Aktif Saat</p>
+              <p className="text-5xl font-black text-orange-400">{parseInt(mostActiveHour)}:00</p>
+              <p className="text-gray-500 text-xs mt-4">
+                {getMostActiveHourDescription(mostActiveHour)}
+              </p>
+            </motion.div>
+
+            {/* Most Active Day */}
+            <motion.div
+              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+              variants={itemVariants}
+              whileHover={{ y: -5 }}
+            >
+              <p className="text-gray-400 text-sm mb-4">📅 En Aktif Gün</p>
+              <p className="text-5xl font-black text-purple-400">{mostActiveDay}</p>
+              <p className="text-gray-500 text-xs mt-4">Haftanın Günü</p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </motion.section>
+
+      {/* Stats Cards Section */}
+      <motion.section
+        className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-blue-900 via-opacity-5 to-transparent"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={containerVariants}
       >
-        <motion.div
-          className="absolute inset-0 opacity-5"
-          animate={{
-            background: [
-              'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)',
-              'radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 70%)',
-              'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)',
-            ],
-          }}
-          transition={{ duration: 10, repeat: Infinity }}
-        />
-
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-12 max-w-4xl px-4">
-          <motion.div
-            className="bg-gradient-to-br from-blue-900 to-blue-800 p-6 sm:p-8 rounded-2xl border border-blue-500 border-opacity-30"
+        <div className="max-w-6xl mx-auto">
+          <motion.h2
+            className="text-4xl sm:text-5xl font-black text-center mb-16 bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent"
             variants={itemVariants}
-            whileHover={{
-              scale: 1.05,
-              boxShadow: '0 0 30px rgba(59, 130, 246, 0.6)',
-            }}
           >
-            <p className="text-lg sm:text-xl text-gray-300 mb-3 sm:mb-4">En aktif olduğun saat</p>
-            <p className="text-4xl sm:text-5xl md:text-6xl font-black text-blue-300">
-              {parseInt(mostActiveHour)}:00
-            </p>
-            <p className="text-xs sm:text-sm text-gray-400 mt-2">
-              {getMostActiveHourDescription(mostActiveHour)}
-            </p>
-          </motion.div>
+            Mesaj İstatistikleri
+          </motion.h2>
 
+          {/* Row 1: Message stats */}
           <motion.div
-            className="bg-gradient-to-br from-purple-900 to-purple-800 p-6 sm:p-8 rounded-2xl border border-purple-500 border-opacity-30"
-            variants={itemVariants}
-            whileHover={{
-              scale: 1.05,
-              boxShadow: '0 0 30px rgba(168, 85, 247, 0.6)',
-            }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6"
+            variants={containerVariants}
           >
-            <p className="text-lg sm:text-xl text-gray-300 mb-3 sm:mb-4">En aktif gün</p>
-            <p className="text-4xl sm:text-5xl md:text-6xl font-black text-purple-300">
-              {mostActiveDay}
-            </p>
-          </motion.div>
-        </div>
-      </motion.div>
+            {/* Message Length */}
+            <motion.div
+              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+              variants={itemVariants}
+              whileHover={{ y: -5 }}
+            >
+              <p className="text-gray-400 text-lg mb-4">📝 Ortalama Mesaj Uzunluğu</p>
+              <p className="text-6xl font-black text-blue-400">{avgMessageLength}</p>
+              <p className="text-gray-500 text-sm mt-4">
+                Min: {stats.min_len} | Max: {stats.max_len}
+              </p>
+            </motion.div>
 
-      {/* Section 4: Style */}
-      <motion.div
-        className="min-h-screen h-screen flex flex-col items-center justify-center relative overflow-hidden py-20 px-4"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={containerVariants}
-      >
-        <motion.div
-          className="absolute inset-0 opacity-5"
-          animate={{
-            background: [
-              'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)',
-              'radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 70%)',
-              'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)',
-            ],
-          }}
-          transition={{ duration: 10, repeat: Infinity }}
-        />
-
-        <div className="relative z-10 max-w-4xl">
-          <motion.div variants={itemVariants} className="mb-8 sm:mb-12">
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-2">Mesaj Uzunluğu</p>
-            <p className="text-4xl sm:text-5xl md:text-6xl font-black text-blue-400">
-              {formatNumber(avgMessageLength)}
-              <span className="text-2xl sm:text-3xl text-gray-400 ml-2">karakter</span>
-            </p>
-            <p className="text-sm sm:text-base text-gray-500 mt-2">
-              Min: {formatNumber(stats.min_len)} | Max: {formatNumber(stats.max_len)}
-            </p>
+            {/* Question Ratio */}
+            <motion.div
+              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+              variants={itemVariants}
+              whileHover={{ y: -5 }}
+            >
+              <p className="text-gray-400 text-lg mb-4">❓ Soru Oranı</p>
+              <p className="text-6xl font-black text-purple-400">%{questionRatio}</p>
+              <p className="text-gray-500 text-sm mt-4">
+                {stats.question} soru / {stats.total} mesaj
+              </p>
+            </motion.div>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="mb-8 sm:mb-12">
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-4">Soru Oranı</p>
-            <p className="text-4xl sm:text-5xl md:text-5xl font-black text-purple-400">
-              %{questionRatio}
-            </p>
-            <p className="text-sm sm:text-base text-gray-500 mt-2">
-              ({formatNumber(stats.question)} soru / {formatNumber(stats.total)} mesaj)
-            </p>
-          </motion.div>
-
-          <motion.div variants={itemVariants} className="mb-8 sm:mb-12">
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-4">En Çok Kullandığın Kelimeler</p>
-            <div className="flex flex-wrap gap-3 sm:gap-4">
+          {/* Row 2: Top Words */}
+          <motion.div
+            className="stat-card p-8 rounded-2xl backdrop-blur-sm mb-6"
+            variants={itemVariants}
+            whileHover={{ y: -5 }}
+          >
+            <p className="text-gray-400 text-lg mb-6">🔤 En Çok Kullanılan Kelimeler</p>
+            <div className="flex flex-wrap gap-3">
               {topWords.map((item, idx) => (
                 <motion.div
                   key={idx}
-                  className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full"
+                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full font-semibold text-sm sm:text-base hover:from-blue-500 hover:to-blue-400 transition-all"
                   whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ type: 'spring' }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <p className="font-bold text-sm sm:text-lg">{item.word}</p>
-                  <p className="text-xs text-blue-100">{formatNumber(item.count)}x</p>
+                  <span>{item.word}</span>
+                  <span className="ml-2 opacity-75">×{item.count}</span>
                 </motion.div>
               ))}
             </div>
           </motion.div>
 
-          <motion.div variants={itemVariants}>
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-4">En Çok Kullandığın Emojiler</p>
-            <div className="flex flex-wrap gap-3 sm:gap-4 justify-center sm:justify-start">
+          {/* Row 3: Top Emojis */}
+          <motion.div
+            className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+            variants={itemVariants}
+            whileHover={{ y: -5 }}
+          >
+            <p className="text-gray-400 text-lg mb-6">😊 En Çok Kullanılan Emojiler</p>
+            <div className="flex flex-wrap gap-6 justify-center sm:justify-start">
               {topEmojis.map((item, idx) => (
                 <motion.div
                   key={idx}
                   className="flex flex-col items-center"
-                  whileHover={{ scale: 1.3, rotate: 10 }}
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: idx * 0.2 }}
+                  whileHover={{ scale: 1.3 }}
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 2.5, repeat: Infinity, delay: idx * 0.15 }}
                 >
-                  <span className="text-4xl sm:text-5xl md:text-6xl">{item.emoji}</span>
-                  <span className="text-xs text-gray-400 mt-1">{formatNumber(item.count)}</span>
+                  <span className="text-5xl mb-2">{item.emoji}</span>
+                  <span className="text-gray-400 text-xs font-medium">×{item.count}</span>
                 </motion.div>
               ))}
             </div>
           </motion.div>
         </div>
-      </motion.div>
+      </motion.section>
 
-      {/* Section 4.5: Advanced Analytics */}
-      <motion.div
-        className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden py-12 sm:py-16 md:py-20 px-4"
+      {/* Advanced Analytics Section */}
+      <motion.section
+        className="relative py-20 px-4 sm:px-6 lg:px-8"
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: false, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.3 }}
         variants={containerVariants}
       >
-        <motion.div
-          className="absolute inset-0 opacity-5"
-          animate={{
-            background: [
-              'radial-gradient(circle, rgba(236,72,153,0.1) 0%, transparent 70%)',
-              'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)',
-              'radial-gradient(circle, rgba(236,72,153,0.1) 0%, transparent 70%)',
-            ],
-          }}
-          transition={{ duration: 10, repeat: Infinity }}
-        />
-
-        <div className="relative z-10 max-w-5xl">
+        <div className="max-w-6xl mx-auto">
           <motion.h2
-            className="text-3xl sm:text-4xl md:text-5xl font-black mb-8 sm:mb-12 md:mb-16 text-center bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text text-transparent"
+            className="text-4xl sm:text-5xl font-black text-center mb-16 bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent"
             variants={itemVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
           >
-            İleri İstatistikler
+            İleri Analitiği
           </motion.h2>
 
-          {/* Row 1: Main Stats */}
-          <motion.div 
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8"
+          {/* Row 1: Main metrics - 4 columns */}
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
             variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
           >
+            {/* Daily Average */}
             <motion.div
-              className="bg-gradient-to-br from-cyan-900 to-cyan-800 p-6 sm:p-8 rounded-2xl border border-cyan-500 border-opacity-30"
+              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
-              whileHover={{
-                scale: 1.05,
-                boxShadow: '0 0 30px rgba(34, 211, 238, 0.6)',
-              }}
+              whileHover={{ y: -5 }}
             >
-              <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-3 sm:mb-4">Günlük Ortalama Mesaj</p>
-              <p className="text-4xl sm:text-5xl md:text-6xl font-black text-cyan-300">{avgMessagesPerDay}</p>
-              <p className="text-xs sm:text-sm text-gray-400 mt-2">
-                {formatNumber(stats.total)} mesaj / {stats.active_days} gün
-              </p>
+              <p className="text-gray-400 text-xs sm:text-sm mb-3">📊 Günlük Ortalama</p>
+              <p className="text-4xl sm:text-5xl font-black text-cyan-400">{avgMessagesPerDay}</p>
+              <p className="text-gray-500 text-xs mt-3">mesaj/gün</p>
             </motion.div>
 
+            {/* Most Active Month */}
             <motion.div
-              className="bg-gradient-to-br from-orange-900 to-orange-800 p-6 sm:p-8 rounded-2xl border border-orange-500 border-opacity-30"
+              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
-              whileHover={{
-                scale: 1.05,
-                boxShadow: '0 0 30px rgba(249, 115, 22, 0.6)',
-              }}
+              whileHover={{ y: -5 }}
             >
-              <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-3 sm:mb-4">En Aktif Ay</p>
-              <p className="text-4xl sm:text-5xl md:text-6xl font-black text-orange-300">{formatNumber(mostActiveMonth.count)}</p>
-              <p className="text-xs sm:text-sm text-gray-400 mt-2">{getMonthName(mostActiveMonth.month)}</p>
-            </motion.div>
-          </motion.div>
-
-          {/* Row 2: Peak Activity & Profile */}
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <motion.div
-              className="bg-gradient-to-br from-rose-900 to-rose-800 p-6 sm:p-8 rounded-2xl border border-rose-500 border-opacity-30"
-              variants={itemVariants}
-              whileHover={{
-                scale: 1.05,
-                boxShadow: '0 0 30px rgba(244, 63, 94, 0.6)',
-              }}
-            >
-              <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-3 sm:mb-4">Peak Aktivite Saati</p>
-              <p className="text-4xl sm:text-5xl md:text-6xl font-black text-rose-300">{peakActivityCombo.day}</p>
-              <p className="text-xs sm:text-sm text-gray-400 mt-2">
-                {peakActivityCombo.hour}:00 - {formatNumber(peakActivityCombo.count)} mesaj
-              </p>
+              <p className="text-gray-400 text-xs sm:text-sm mb-3">📅 En Aktif Ay</p>
+              <p className="text-4xl sm:text-5xl font-black text-orange-400">{formatNumber(mostActiveMonth.count)}</p>
+              <p className="text-gray-500 text-xs mt-3">{getMonthName(mostActiveMonth.month)}</p>
             </motion.div>
 
+            {/* Peak Activity */}
             <motion.div
-              className="bg-gradient-to-br from-violet-900 to-violet-800 p-6 sm:p-8 rounded-2xl border border-violet-500 border-opacity-30"
+              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
-              whileHover={{
-                scale: 1.05,
-                boxShadow: '0 0 30px rgba(168, 85, 247, 0.6)',
-              }}
+              whileHover={{ y: -5 }}
             >
-              <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-3 sm:mb-4">Profil Türü</p>
-              <p className="text-4xl sm:text-5xl md:text-6xl font-black text-violet-300">
+              <p className="text-gray-400 text-xs sm:text-sm mb-3">🔥 Peak Saati</p>
+              <p className="text-4xl sm:text-5xl font-black text-rose-400">{peakActivityCombo.hour}:00</p>
+              <p className="text-gray-500 text-xs mt-3">{peakActivityCombo.day}</p>
+            </motion.div>
+
+            {/* Profile Type */}
+            <motion.div
+              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
+              variants={itemVariants}
+              whileHover={{ y: -5 }}
+            >
+              <p className="text-gray-400 text-xs sm:text-sm mb-3">🌙 Profil Tipi</p>
+              <p className="text-3xl font-black text-violet-400 mb-1">
                 {nightOwl ? '🌙' : '☀️'}
               </p>
-              <p className="text-xs sm:text-sm text-gray-400 mt-2">
+              <p className="text-gray-500 text-xs">
                 {nightOwl ? 'Gece Baykuşu' : 'Gündüz Aktifi'}
               </p>
             </motion.div>
           </motion.div>
 
-          {/* Row 3: Content Stats */}
-          <motion.div 
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8"
+          {/* Row 2: Content stats - 3 columns */}
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-3 gap-6"
             variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
           >
+            {/* Unique Words */}
             <motion.div
-              className="bg-gradient-to-br from-indigo-900 to-indigo-800 p-6 sm:p-8 rounded-2xl border border-indigo-500 border-opacity-30"
+              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
-              whileHover={{
-                scale: 1.05,
-                boxShadow: '0 0 30px rgba(99, 102, 241, 0.6)',
-              }}
+              whileHover={{ y: -5 }}
             >
-              <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-3 sm:mb-4">Benzersiz Kelimeler</p>
-              <p className="text-4xl sm:text-5xl md:text-6xl font-black text-indigo-300">{formatNumber(totalUniqueWords)}</p>
-              <p className="text-xs text-gray-400 mt-2">farklı kelime kullanıldı</p>
+              <p className="text-gray-400 text-xs sm:text-sm mb-3">📚 Benzersiz Kelimeler</p>
+              <p className="text-5xl font-black text-indigo-400">{formatNumber(totalUniqueWords)}</p>
+              <p className="text-gray-500 text-xs mt-3">farklı kelime</p>
             </motion.div>
 
+            {/* Unique Emojis */}
             <motion.div
-              className="bg-gradient-to-br from-emerald-900 to-emerald-800 p-6 sm:p-8 rounded-2xl border border-emerald-500 border-opacity-30"
+              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
-              whileHover={{
-                scale: 1.05,
-                boxShadow: '0 0 30px rgba(16, 185, 129, 0.6)',
-              }}
+              whileHover={{ y: -5 }}
             >
-              <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-3 sm:mb-4">Benzersiz Emojiler</p>
-              <p className="text-4xl sm:text-5xl md:text-6xl font-black text-emerald-300">{formatNumber(totalUniqueEmojis)}</p>
-              <p className="text-xs text-gray-400 mt-2">farklı emoji kullanıldı</p>
+              <p className="text-gray-400 text-xs sm:text-sm mb-3">😊 Benzersiz Emojiler</p>
+              <p className="text-5xl font-black text-emerald-400">{formatNumber(totalUniqueEmojis)}</p>
+              <p className="text-gray-500 text-xs mt-3">farklı emoji</p>
             </motion.div>
 
+            {/* Message Range */}
             <motion.div
-              className="bg-gradient-to-br from-lime-900 to-lime-800 p-6 sm:p-8 rounded-2xl border border-lime-500 border-opacity-30"
+              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
-              whileHover={{
-                scale: 1.05,
-                boxShadow: '0 0 30px rgba(132, 204, 22, 0.6)',
-              }}
+              whileHover={{ y: -5 }}
             >
-              <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-3 sm:mb-4">Mesaj Aralığı</p>
-              <p className="text-3xl sm:text-4xl md:text-5xl font-black text-lime-300">
-                {formatNumber(stats.min_len)} - {formatNumber(stats.max_len)}
+              <p className="text-gray-400 text-xs sm:text-sm mb-3">📏 Mesaj Aralığı</p>
+              <p className="text-4xl font-black text-lime-400">
+                {stats.min_len}-{stats.max_len}
               </p>
-              <p className="text-xs text-gray-400 mt-2\">minimum - maksimum karakter</p>
-            </motion.div>
-          </motion.div>
-
-          {/* Row 4: Top Days */}
-          <motion.div 
-            className="grid grid-cols-1 gap-6 sm:gap-8"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <motion.h3
-              className="text-2xl sm:text-3xl font-bold text-gray-300 mb-4"
-              variants={itemVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-            >
-              En Aktif Günler
-            </motion.h3>
-            <motion.div 
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-            >
-              {topDays.map((dayInfo, idx) => (
-                <motion.div
-                  key={idx}
-                  className="bg-gradient-to-br from-gray-800 to-gray-700 p-4 sm:p-6 rounded-xl border border-gray-600 border-opacity-50"
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="text-center">
-                    <p className="text-gray-400 text-xs sm:text-sm mb-2">#{idx + 1}</p>
-                    <p className="text-2xl sm:text-3xl font-black text-blue-400 mb-1">{dayInfo.day}</p>
-                    <p className="text-base sm:text-lg text-gray-300">{formatNumber(dayInfo.count)} mesaj</p>
-                  </div>
-                </motion.div>
-              ))}
+              <p className="text-gray-500 text-xs mt-3">karakter</p>
             </motion.div>
           </motion.div>
         </div>
-      </motion.div>
+      </motion.section>
 
-      {/* Section 5: Comparison */}
-      <motion.div
-        className="min-h-screen h-screen flex items-center justify-center relative overflow-hidden aurora-bg py-20 px-4"
+      {/* Rankings Section */}
+      <motion.section
+        className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-purple-900 via-opacity-5 to-transparent"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={containerVariants}
       >
-        <motion.div
-          className="absolute inset-0 opacity-10"
-          animate={{
-            backgroundPosition: ['0% 0%', '100% 100%'],
-          }}
-          transition={{ duration: 15, repeat: Infinity }}
-        />
-
-        <motion.div
-          className="relative z-10 text-center max-w-3xl"
-          variants={glitchVariants}
-          initial="hidden"
-          whileInView="visible"
-          animate="animate"
-          viewport={{ once: false, amount: 0.3 }}
-        >
+        <div className="max-w-6xl mx-auto">
           <motion.h2
-            className="text-4xl sm:text-5xl md:text-6xl font-black mb-4 sm:mb-6"
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
+            className="text-4xl sm:text-5xl font-black text-center mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent"
+            variants={itemVariants}
           >
-            <span className="bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
-              %{rankings.messageCountPercentile || '—'}
-            </span>
+            Sunucudaki Sıralaman
           </motion.h2>
 
-          <motion.p
-            className="text-lg sm:text-2xl md:text-3xl text-gray-200 leading-relaxed"
+          <motion.div
+            className="text-center mb-12"
             variants={itemVariants}
           >
-            Sunucudaki kullanıcıların <span className="text-green-400 font-bold">daha aktif</span>'sin
-          </motion.p>
+            <p className="text-6xl sm:text-7xl md:text-8xl font-black text-green-400 mb-2">
+              %{rankings.messageCountPercentile || '—'}
+            </p>
+            <p className="text-gray-400">
+              Aktif kullanıcılardan <span className="text-green-400 font-bold">daha aktif</span>'sin
+            </p>
+          </motion.div>
 
           <motion.div
-            className="mt-8 sm:mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8"
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
             variants={containerVariants}
           >
+            {/* Message Count Rank */}
             <motion.div
-              className="bg-gradient-to-br from-blue-900 to-blue-800 p-4 sm:p-6 rounded-xl border border-blue-500 border-opacity-30"
+              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
+              whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-xs sm:text-sm mb-2">Mesaj Sıralaması</p>
-              <p className="text-3xl sm:text-4xl font-bold text-blue-300">#{rankings.messageCountRank || '—'}</p>
-              <p className="text-xs text-gray-500 mt-2">{formatNumber(stats.total)} mesaj</p>
+              <p className="text-gray-400 text-sm mb-4">💬 Mesaj Sıralaması</p>
+              <p className="text-5xl font-black text-blue-400 mb-2">#{rankings.messageCountRank || '—'}</p>
+              <p className="text-gray-500 text-sm">{formatNumber(stats.total)} mesaj gönderdin</p>
             </motion.div>
 
+            {/* Active Days */}
             <motion.div
-              className="bg-gradient-to-br from-purple-900 to-purple-800 p-4 sm:p-6 rounded-xl border border-purple-500 border-opacity-30"
+              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
+              whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-xs sm:text-sm mb-2">Aktif Günler</p>
-              <p className="text-3xl sm:text-4xl font-bold text-purple-300">{formatNumber(stats.active_days)}</p>
-              <p className="text-xs text-gray-500 mt-2">{activityPercentage}% işbirliği</p>
+              <p className="text-gray-400 text-sm mb-4">📅 Aktif Günler</p>
+              <p className="text-5xl font-black text-purple-400 mb-2">{formatNumber(stats.active_days)}</p>
+              <p className="text-gray-500 text-sm">{activityPercentage}% tutarlı aktif</p>
             </motion.div>
 
+            {/* Mentions */}
             <motion.div
-              className="bg-gradient-to-br from-pink-900 to-pink-800 p-4 sm:p-6 rounded-xl border border-pink-500 border-opacity-30"
+              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
+              whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-xs sm:text-sm mb-2">Ayakta Tutulan</p>
-              <p className="text-3xl sm:text-4xl font-bold text-pink-300">{social.mentioned_by || 0}</p>
-              <p className="text-xs text-gray-500 mt-2">kişi tarafından bahsedilmiş</p>
+              <p className="text-gray-400 text-sm mb-4">👤 Bahsedilme</p>
+              <p className="text-5xl font-black text-pink-400 mb-2">{social.mentioned_by || 0}</p>
+              <p className="text-gray-500 text-sm">kişi tarafından anıldı</p>
             </motion.div>
           </motion.div>
-        </motion.div>
-      </motion.div>
+        </div>
+      </motion.section>
 
-      {/* Section 6: Leaderboard */}
-      <motion.div
-        className="min-h-screen h-screen flex flex-col items-center justify-center relative overflow-hidden py-20 px-4"
+      {/* Leaderboard Section */}
+      <motion.section
+        className="relative py-20 px-4 sm:px-6 lg:px-8"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={containerVariants}
       >
-        <motion.div
-          className="absolute inset-0 opacity-5"
-          animate={{
-            background: [
-              'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)',
-              'radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 70%)',
-              'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)',
-            ],
-          }}
-          transition={{ duration: 10, repeat: Infinity }}
-        />
-
-        <div className="relative z-10 max-w-5xl w-full">
+        <div className="max-w-6xl mx-auto">
           <motion.h2
-            className="text-3xl sm:text-4xl md:text-5xl font-black mb-8 sm:mb-12 md:mb-16 text-center bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
+            className="text-4xl sm:text-5xl font-black text-center mb-16 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
             variants={itemVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
           >
-            Sıralamada Yerin
+            🏆 Sıralamalar
           </motion.h2>
 
           {userData.leaderboard && (
-            <motion.div 
-              className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8"
+            <motion.div
+              className="grid grid-cols-1 lg:grid-cols-3 gap-6"
               variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
             >
-              {/* Mesaj Sayısı */}
+              {/* Message Count Leaderboard */}
               <motion.div
-                className="bg-gradient-to-br from-blue-900 to-blue-800 p-4 sm:p-6 md:p-8 rounded-2xl border border-blue-500 border-opacity-30"
+                className="stat-card p-6 rounded-2xl backdrop-blur-sm"
                 variants={itemVariants}
+                whileHover={{ y: -5 }}
               >
-                <div className="text-center mb-4 sm:mb-6 md:mb-8">
-                  <p className="text-base sm:text-lg md:text-2xl text-gray-300 mb-2">💬 Mesaj Sayısı</p>
-                  <p className="text-3xl sm:text-4xl md:text-5xl font-black text-blue-300">#{userData.leaderboard.message_count.userRank}</p>
-                  <p className="text-xs sm:text-sm text-gray-400 mt-2">{formatNumber(userData.leaderboard.message_count.userValue)} mesaj</p>
+                <div className="mb-6">
+                  <p className="text-gray-400 text-sm mb-2">💬 Mesaj Sayısı</p>
+                  <p className="text-4xl font-black text-blue-400">#{userData.leaderboard.message_count.userRank}</p>
+                  <p className="text-gray-500 text-xs mt-2">{formatNumber(userData.leaderboard.message_count.userValue)} mesaj</p>
                 </div>
 
-                <div className="space-y-2 sm:space-y-3 max-h-64 overflow-y-auto">
+                <div className="space-y-2 max-h-80 overflow-y-auto custom-scrollbar">
                   {userData.leaderboard.message_count.context.map((item) => (
                     <motion.div
                       key={item.user_id}
-                      className={`flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg transition-all ${
+                      className={`flex items-center gap-3 p-3 rounded-lg transition-all text-sm ${
                         item.isUser
                           ? 'bg-blue-700 border border-blue-400'
                           : 'bg-gray-700 hover:bg-gray-600'
                       }`}
                       whileHover={{ x: 5 }}
                     >
-                      <span className="text-sm sm:text-lg font-bold text-gray-300 w-5 sm:w-6 text-right">#{item.rank}</span>
+                      <span className="font-bold text-gray-300 w-5 text-right text-xs">#{item.rank}</span>
                       {item.user?.avatar_url && (
                         <Image
                           src={item.user.avatar_url.replace('?size=512', '?size=32')}
                           alt={item.user.username}
                           width={28}
                           height={28}
-                          className="rounded-full w-7 h-7 sm:w-8 sm:h-8"
+                          className="rounded-full flex-shrink-0"
                         />
                       )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs sm:text-sm font-semibold text-white truncate">{item.user?.username || 'Unknown'}</p>
-                      </div>
-                      <p className="text-xs sm:text-sm font-bold text-gray-300 flex-shrink-0">{formatNumber(item.value)}</p>
+                      <span className="flex-1 truncate text-gray-100 font-medium">{item.user?.username || 'Unknown'}</span>
+                      <span className="font-bold text-gray-300 flex-shrink-0 text-xs">{formatNumber(item.value)}</span>
                     </motion.div>
                   ))}
                 </div>
               </motion.div>
 
-              {/* Aktif Günler */}
+              {/* Active Days Leaderboard */}
               <motion.div
-                className="bg-gradient-to-br from-purple-900 to-purple-800 p-4 sm:p-6 md:p-8 rounded-2xl border border-purple-500 border-opacity-30"
+                className="stat-card p-6 rounded-2xl backdrop-blur-sm"
                 variants={itemVariants}
+                whileHover={{ y: -5 }}
               >
-                <div className="text-center mb-4 sm:mb-6 md:mb-8">
-                  <p className="text-base sm:text-lg md:text-2xl text-gray-300 mb-2">📅 Aktif Günler</p>
-                  <p className="text-3xl sm:text-4xl md:text-5xl font-black text-purple-300">#{userData.leaderboard.active_days.userRank}</p>
-                  <p className="text-xs sm:text-sm text-gray-400 mt-2">{userData.leaderboard.active_days.userValue} gün</p>
+                <div className="mb-6">
+                  <p className="text-gray-400 text-sm mb-2">📅 Aktif Günler</p>
+                  <p className="text-4xl font-black text-purple-400">#{userData.leaderboard.active_days.userRank}</p>
+                  <p className="text-gray-500 text-xs mt-2">{userData.leaderboard.active_days.userValue} gün</p>
                 </div>
 
-                <div className="space-y-2 sm:space-y-3 max-h-64 overflow-y-auto">
+                <div className="space-y-2 max-h-80 overflow-y-auto custom-scrollbar">
                   {userData.leaderboard.active_days.context.map((item) => (
                     <motion.div
                       key={item.user_id}
-                      className={`flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg transition-all ${
+                      className={`flex items-center gap-3 p-3 rounded-lg transition-all text-sm ${
                         item.isUser
                           ? 'bg-purple-700 border border-purple-400'
                           : 'bg-gray-700 hover:bg-gray-600'
                       }`}
                       whileHover={{ x: 5 }}
                     >
-                      <span className="text-sm sm:text-lg font-bold text-gray-300 w-5 sm:w-6 text-right">#{item.rank}</span>
+                      <span className="font-bold text-gray-300 w-5 text-right text-xs">#{item.rank}</span>
                       {item.user?.avatar_url && (
                         <Image
                           src={item.user.avatar_url.replace('?size=512', '?size=32')}
                           alt={item.user.username}
                           width={28}
                           height={28}
-                          className="rounded-full w-7 h-7 sm:w-8 sm:h-8"
+                          className="rounded-full flex-shrink-0"
                         />
                       )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs sm:text-sm font-semibold text-white truncate">{item.user?.username || 'Unknown'}</p>
-                      </div>
-                      <p className="text-xs sm:text-sm font-bold text-gray-300 flex-shrink-0">{formatNumber(item.value)}</p>
+                      <span className="flex-1 truncate text-gray-100 font-medium">{item.user?.username || 'Unknown'}</span>
+                      <span className="font-bold text-gray-300 flex-shrink-0 text-xs">{item.value}</span>
                     </motion.div>
                   ))}
                 </div>
               </motion.div>
 
-              {/* Ort. Mesaj Uzunluğu */}
+              {/* Average Message Length Leaderboard */}
               <motion.div
-                className="bg-gradient-to-br from-pink-900 to-pink-800 p-4 sm:p-6 md:p-8 rounded-2xl border border-pink-500 border-opacity-30"
+                className="stat-card p-6 rounded-2xl backdrop-blur-sm"
                 variants={itemVariants}
+                whileHover={{ y: -5 }}
               >
-                <div className="text-center mb-4 sm:mb-6 md:mb-8">
-                  <p className="text-base sm:text-lg md:text-2xl text-gray-300 mb-2">📝 Ort. Mesaj Uzunluğu</p>
-                  <p className="text-3xl sm:text-4xl md:text-5xl font-black text-pink-300">#{userData.leaderboard.avg_message_length.userRank}</p>
-                  <p className="text-xs sm:text-sm text-gray-400 mt-2">{userData.leaderboard.avg_message_length.userValue} karakter</p>
+                <div className="mb-6">
+                  <p className="text-gray-400 text-sm mb-2">📝 Ort. Mesaj Uzunluğu</p>
+                  <p className="text-4xl font-black text-pink-400">#{userData.leaderboard.avg_message_length.userRank}</p>
+                  <p className="text-gray-500 text-xs mt-2">{userData.leaderboard.avg_message_length.userValue} karakter</p>
                 </div>
 
-                <div className="space-y-2 sm:space-y-3 max-h-64 overflow-y-auto">
+                <div className="space-y-2 max-h-80 overflow-y-auto custom-scrollbar">
                   {userData.leaderboard.avg_message_length.context.map((item) => (
                     <motion.div
                       key={item.user_id}
-                      className={`flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg transition-all ${
+                      className={`flex items-center gap-3 p-3 rounded-lg transition-all text-sm ${
                         item.isUser
                           ? 'bg-pink-700 border border-pink-400'
                           : 'bg-gray-700 hover:bg-gray-600'
                       }`}
                       whileHover={{ x: 5 }}
                     >
-                      <span className="text-sm sm:text-lg font-bold text-gray-300 w-5 sm:w-6 text-right">#{item.rank}</span>
+                      <span className="font-bold text-gray-300 w-5 text-right text-xs">#{item.rank}</span>
                       {item.user?.avatar_url && (
                         <Image
                           src={item.user.avatar_url.replace('?size=512', '?size=32')}
                           alt={item.user.username}
                           width={28}
                           height={28}
-                          className="rounded-full w-7 h-7 sm:w-8 sm:h-8"
+                          className="rounded-full flex-shrink-0"
                         />
                       )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs sm:text-sm font-semibold text-white truncate">{item.user?.username || 'Unknown'}</p>
-                      </div>
-                      <p className="text-xs sm:text-sm font-bold text-gray-300 flex-shrink-0">{formatNumber(item.value)}</p>
+                      <span className="flex-1 truncate text-gray-100 font-medium">{item.user?.username || 'Unknown'}</span>
+                      <span className="font-bold text-gray-300 flex-shrink-0 text-xs">{item.value}</span>
                     </motion.div>
                   ))}
                 </div>
@@ -908,19 +847,19 @@ export default function SummaryPage({ userData }) {
             </motion.div>
           )}
         </div>
-      </motion.div>
+      </motion.section>
 
-      {/* Section 7: Share */}
-      <motion.div
+      {/* Share/Download Section */}
+      <motion.section
         id="summary-section"
-        className="min-h-screen h-screen flex flex-col items-center justify-center relative overflow-hidden py-20"
+        className="relative py-20 px-4 sm:px-6 lg:px-8 min-h-screen flex flex-col items-center justify-center"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={containerVariants}
       >
         <motion.div
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 opacity-20 -z-10"
           animate={{
             background: [
               'radial-gradient(circle at 20% 50%, rgba(59,130,246,0.2) 0%, transparent 50%)',
@@ -931,28 +870,32 @@ export default function SummaryPage({ userData }) {
           transition={{ duration: 8, repeat: Infinity }}
         />
 
-        <div className="relative z-10 text-center w-full">
-          <motion.h2
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 sm:mb-8 md:mb-10 lg:mb-12 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
-            variants={itemVariants}
-          >
-            Bu Özeti Paylaş
-          </motion.h2>
+        <motion.div
+          className="text-center space-y-8 max-w-2xl"
+          variants={itemVariants}
+        >
+          <div>
+            <h2 className="text-5xl sm:text-6xl md:text-7xl font-black mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Bu Özeti Paylaş
+            </h2>
+            <p className="text-gray-400 text-lg">
+              Özleme göre resim indir ve sosyal ağlarda paylaş
+            </p>
+          </div>
 
           <motion.button
             onClick={handleShare}
-            className="px-6 sm:px-8 md:px-10 lg:px-12 py-3 sm:py-4 md:py-5 lg:py-6 text-sm sm:text-base md:text-lg lg:text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 rounded-full border-2 border-blue-400 text-white shadow-2xl"
+            className="px-10 py-5 text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-600 rounded-full border-2 border-blue-400 text-white shadow-2xl"
             whileHover={{
-              scale: 1.1,
-              boxShadow: '0 0 40px rgba(59, 130, 246, 0.8)',
+              scale: 1.08,
+              boxShadow: '0 0 50px rgba(59, 130, 246, 0.8)',
             }}
             whileTap={{ scale: 0.95 }}
-            variants={itemVariants}
           >
             🎬 Özeti İndir
           </motion.button>
-        </div>
-      </motion.div>
+        </motion.div>
+      </motion.section>
     </div>
   );
 }

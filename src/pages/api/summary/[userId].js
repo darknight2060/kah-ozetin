@@ -1,6 +1,13 @@
 import path from 'path';
 import { promises as fs } from 'fs';
 
+/**
+ * Check if a user is deleted
+ */
+function isDeletedUser(username) {
+  return username === 'Deleted User' || username === 'deleted';
+}
+
 async function fetchDiscordUserProfile(userId) {
   try {
     const response = await fetch(`https://discord.com/api/v10/users/${userId}`, {
@@ -54,6 +61,12 @@ export default async function handler(req, res) {
     const userData = users[userId];
 
     if (userData) {
+      // Check if user is deleted
+      if (isDeletedUser(userData.username)) {
+        res.status(404).json({ error: "User not found" });
+        return;
+      }
+      
       // Fetch Discord profile data
       const discordProfile = await fetchDiscordUserProfile(userId);
 

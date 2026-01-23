@@ -16,6 +16,28 @@ async function loadJsonData(filename) {
 }
 
 /**
+ * Check if a user is deleted
+ */
+function isDeletedUser(username) {
+  return username === 'Deleted User' || username === 'deleted';
+}
+
+/**
+ * Filter out deleted users from a user object
+ */
+function filterDeletedUsers(users) {
+  if (!users) return {};
+  
+  const filtered = {};
+  for (const [id, user] of Object.entries(users)) {
+    if (!isDeletedUser(user.username)) {
+      filtered[id] = user;
+    }
+  }
+  return filtered;
+}
+
+/**
  * Get user summary - combines all data sources for a specific user
  */
 export async function getUserSummary(userId) {
@@ -32,6 +54,12 @@ export async function getUserSummary(userId) {
   }
 
   const userInfo = users[userId];
+  
+  // Check if user is deleted
+  if (isDeletedUser(userInfo.username)) {
+    return null;
+  }
+  
   const userStats = stats?.[userId] || {};
   const userSocial = social?.[userId] || {};
 
@@ -98,17 +126,22 @@ function calculateRankings(userId, statsData, rankingsData) {
  * Get all rankings data
  */
 export async function getAllRankings() {
-  const [stats, rankings] = await Promise.all([
+  const [stats, rankings, users] = await Promise.all([
     loadJsonData('user_stats.json'),
     loadJsonData('rankings.json'),
+    loadJsonData('users.json'),
   ]);
 
-  if (!stats) return null;
+  if (!stats || !users) return null;
 
-  const userIds = Object.keys(stats);
+  // Filter out deleted users
+  const filteredUserIds = Object.keys(stats).filter(id => {
+    const user = users[id];
+    return user && !isDeletedUser(user.username);
+  });
   
   // Build message count ranking
-  const messageCountRanking = userIds
+  const messageCountRanking = filteredUserIds
     .map(id => ({
       user_id: id,
       value: stats[id].total || 0,
@@ -116,7 +149,7 @@ export async function getAllRankings() {
     .sort((a, b) => b.value - a.value);
 
   // Build active days ranking
-  const activeDaysRanking = userIds
+  const activeDaysRanking = filteredUserIds
     .map(id => ({
       user_id: id,
       value: stats[id].active_days || 0,
@@ -124,7 +157,7 @@ export async function getAllRankings() {
     .sort((a, b) => b.value - a.value);
 
   // Build average message length ranking
-  const avgLengthRanking = userIds
+  const avgLengthRanking = filteredUserIds
     .map(id => ({
       user_id: id,
       value: stats[id].total > 0 ? Number((stats[id].len_sum / stats[id].total).toFixed(1)) : 0,
@@ -143,7 +176,7 @@ export async function getAllRankings() {
  */
 export async function getUsersForLeaderboard() {
   const users = await loadJsonData('users.json');
-  return users || {};
+  return filterDeletedUsers(users) || {};
 }
 
 /**
@@ -157,10 +190,14 @@ export async function getUserRankingsWithContext(userId, limit = 5) {
 
   if (!stats || !users) return null;
 
-  const userIds = Object.keys(stats);
+  // Filter out deleted users
+  const filteredUserIds = Object.keys(stats).filter(id => {
+    const user = users[id];
+    return user && !isDeletedUser(user.username);
+  });
 
   // Build message count ranking
-  const messageCountRanking = userIds
+  const messageCountRanking = filteredUserIds
     .map(id => ({
       user_id: id,
       value: stats[id].total || 0,
@@ -168,7 +205,7 @@ export async function getUserRankingsWithContext(userId, limit = 5) {
     .sort((a, b) => b.value - a.value);
 
   // Build active days ranking
-  const activeDaysRanking = userIds
+  const activeDaysRanking = filteredUserIds
     .map(id => ({
       user_id: id,
       value: stats[id].active_days || 0,
@@ -176,7 +213,7 @@ export async function getUserRankingsWithContext(userId, limit = 5) {
     .sort((a, b) => b.value - a.value);
 
   // Build average message length ranking
-  const avgLengthRanking = userIds
+  const avgLengthRanking = filteredUserIds
     .map(id => ({
       user_id: id,
       value: stats[id].total > 0 ? Number((stats[id].len_sum / stats[id].total).toFixed(1)) : 0,
