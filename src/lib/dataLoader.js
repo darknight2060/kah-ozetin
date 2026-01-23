@@ -10,7 +10,7 @@ async function loadJsonData(filename) {
     const data = await fs.readFile(filePath, 'utf-8');
     return JSON.parse(data);
   } catch (error) {
-    console.error(`Failed to load ${filename}:`, error);
+    // Silently return null instead of logging errors for missing optional files
     return null;
   }
 }
@@ -41,11 +41,10 @@ function filterDeletedUsers(users) {
  * Get user summary - combines all data sources for a specific user
  */
 export async function getUserSummary(userId) {
-  const [users, stats, social, rankings, leaderboardContext] = await Promise.all([
+  const [users, stats, social, leaderboardContext] = await Promise.all([
     loadJsonData('users.json'),
     loadJsonData('user_stats.json'),
     loadJsonData('user_social.json'),
-    loadJsonData('rankings.json'),
     getUserRankingsWithContext(userId, 5),
   ]);
 
@@ -64,7 +63,7 @@ export async function getUserSummary(userId) {
   const userSocial = social?.[userId] || {};
 
   // Calculate rankings for this user
-  const rankings_data = calculateRankings(userId, stats, rankings);
+  const rankings_data = calculateRankings(userId, stats);
 
   return {
     user: userInfo,
@@ -78,7 +77,7 @@ export async function getUserSummary(userId) {
 /**
  * Calculate user rankings and percentiles
  */
-function calculateRankings(userId, statsData, rankingsData) {
+function calculateRankings(userId, statsData) {
   if (!statsData || !statsData[userId]) {
     return {};
   }

@@ -314,22 +314,24 @@ export default function SummaryPage({ userData }) {
             variants={floatingVariants}
             animate="float"
           >
-            {user.avatar_url && (
-              <motion.div
-                className="gradient-border"
-                whileHover={{ scale: 1.08 }}
-                transition={{ type: 'spring', stiffness: 300 }}
-              >
-                <Image
-                  src={user.avatar_url}
-                  alt="User Avatar"
-                  width={200}
-                  height={200}
-                  className="w-48 h-48 md:w-56 md:h-56"
-                  priority
-                />
-              </motion.div>
-            )}
+            <motion.div
+              className="gradient-border"
+              whileHover={{ scale: 1.08 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
+              <Image
+                src={user.avatar_url || 'https://cdn.discordapp.com/embed/avatars/0.png'}
+                alt="User Avatar"
+                width={200}
+                height={200}
+                className="w-48 h-48 md:w-56 md:h-56"
+                priority
+                unoptimized={true}
+                onError={(e) => {
+                  e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
+                }}
+              />
+            </motion.div>
           </motion.div>
 
           {/* Username and display name */}
@@ -749,15 +751,17 @@ export default function SummaryPage({ userData }) {
                       whileHover={{ x: 5 }}
                     >
                       <span className="font-bold text-gray-300 w-5 text-right text-xs">#{item.rank}</span>
-                      {item.user?.avatar_url && (
-                        <Image
-                          src={item.user.avatar_url.replace('?size=512', '?size=32')}
-                          alt={item.user.username}
-                          width={28}
-                          height={28}
-                          className="rounded-full flex-shrink-0"
-                        />
-                      )}
+                      <Image
+                        src={item.user?.avatar_url?.replace('?size=512', '?size=32') || 'https://cdn.discordapp.com/embed/avatars/0.png'}
+                        alt={item.user?.username || 'User avatar'}
+                        width={28}
+                        height={28}
+                        className="rounded-full flex-shrink-0"
+                        unoptimized={true}
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
+                        }}
+                      />
                       <span className="flex-1 truncate text-gray-100 font-medium">{item.user?.username || 'Unknown'}</span>
                       <span className="font-bold text-gray-300 flex-shrink-0 text-xs">{formatNumber(item.value)}</span>
                     </motion.div>
@@ -789,15 +793,17 @@ export default function SummaryPage({ userData }) {
                       whileHover={{ x: 5 }}
                     >
                       <span className="font-bold text-gray-300 w-5 text-right text-xs">#{item.rank}</span>
-                      {item.user?.avatar_url && (
-                        <Image
-                          src={item.user.avatar_url.replace('?size=512', '?size=32')}
-                          alt={item.user.username}
-                          width={28}
-                          height={28}
-                          className="rounded-full flex-shrink-0"
-                        />
-                      )}
+                      <Image
+                        src={item.user?.avatar_url?.replace('?size=512', '?size=32') || 'https://cdn.discordapp.com/embed/avatars/0.png'}
+                        alt={item.user?.username || 'User avatar'}
+                        width={28}
+                        height={28}
+                        className="rounded-full flex-shrink-0"
+                        unoptimized={true}
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
+                        }}
+                      />
                       <span className="flex-1 truncate text-gray-100 font-medium">{item.user?.username || 'Unknown'}</span>
                       <span className="font-bold text-gray-300 flex-shrink-0 text-xs">{item.value}</span>
                     </motion.div>
@@ -829,15 +835,17 @@ export default function SummaryPage({ userData }) {
                       whileHover={{ x: 5 }}
                     >
                       <span className="font-bold text-gray-300 w-5 text-right text-xs">#{item.rank}</span>
-                      {item.user?.avatar_url && (
-                        <Image
-                          src={item.user.avatar_url.replace('?size=512', '?size=32')}
-                          alt={item.user.username}
-                          width={28}
-                          height={28}
-                          className="rounded-full flex-shrink-0"
-                        />
-                      )}
+                      <Image
+                        src={item.user?.avatar_url?.replace('?size=512', '?size=32') || 'https://cdn.discordapp.com/embed/avatars/0.png'}
+                        alt={item.user?.username || 'User avatar'}
+                        width={28}
+                        height={28}
+                        className="rounded-full flex-shrink-0"
+                        unoptimized={true}
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
+                        }}
+                      />
                       <span className="flex-1 truncate text-gray-100 font-medium">{item.user?.username || 'Unknown'}</span>
                       <span className="font-bold text-gray-300 flex-shrink-0 text-xs">{item.value}</span>
                     </motion.div>

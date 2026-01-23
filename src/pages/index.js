@@ -286,13 +286,14 @@ export default function Home() {
                       transition={{ delay: index * 0.05 }}
                       whileHover={{ x: 10 }}
                     >
-                      {user.avatar && (
-                        <img
-                          src={user.avatar}
-                          alt={user.displayName}
-                          className="w-10 h-10 rounded-full border border-purple-500/50"
-                        />
-                      )}
+                      <img
+                        src={user.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}
+                        alt={user.displayName}
+                        className="w-10 h-10 rounded-full border border-purple-500/50"
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
+                        }}
+                      />
                       <div className="flex-1">
                         <div className="font-semibold text-white group-hover:text-purple-300 transition">
                           {user.displayName}
