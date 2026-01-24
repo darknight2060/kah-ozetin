@@ -362,15 +362,27 @@ export default function LeaderboardPage({ initialData }) {
 
 export async function getStaticProps() {
   try {
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-    const host = process.env.VERCEL_URL || 'localhost:3000';
+    // Build sırasında API'ye erişmek için tam URL oluştur
+    let apiUrl;
     
-    const response = await fetch(
-      `${protocol}://${host}/api/leaderboard?type=message_count&page=1&limit=15`
-    );
+    if (process.env.VERCEL_URL) {
+      // Vercel production ortamında
+      apiUrl = `https://${process.env.VERCEL_URL}/api/leaderboard?type=message_count&page=1&limit=15`;
+    } else {
+      // Lokal ortamda
+      apiUrl = `http://localhost:3000/api/leaderboard?type=message_count&page=1&limit=15`;
+    }
+    
+    console.log('Fetching leaderboard data from:', apiUrl);
+    
+    const response = await fetch(apiUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     
     if (!response.ok) {
-      throw new Error('Failed to fetch initial data');
+      throw new Error(`API responded with status ${response.status}`);
     }
 
     const initialData = await response.json();
@@ -382,10 +394,14 @@ export async function getStaticProps() {
       revalidate: 3600,
     };
   } catch (error) {
-    console.error('Error loading leaderboard:', error);
+    console.error('Error loading leaderboard data:', error);
+    // Client-side yüklemesine izin ver - boş data ile başla
     return {
       props: {
-        initialData: null,
+        initialData: {
+          items: [],
+          pagination: { hasMore: true, currentPage: 1 },
+        },
       },
       revalidate: 60,
     };
