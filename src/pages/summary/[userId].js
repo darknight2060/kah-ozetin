@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas-pro';
 import { useEffect, useState } from 'react';
 import { getUserSummary } from '@/lib/dataLoader';
 import {
@@ -112,15 +112,47 @@ export default function SummaryPage({ userData }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleShare = () => {
-    const summaryElement = document.getElementById('summary-section');
-    if (summaryElement) {
-      html2canvas(summaryElement).then((canvas) => {
-        const link = document.createElement('a');
-        link.download = `${userData.user.username}-wrapped.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-      });
+  const handleShare = async () => {
+    const cardElement = document.getElementById('share-card');
+    if (cardElement) {
+      try {
+        // Wait a bit to ensure images are loaded
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        const canvas = await html2canvas(cardElement, {
+          backgroundColor: '#000000',
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+        });
+        
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        
+        // Try native share API first (for mobile)
+        if (navigator.share) {
+          const file = new File([blob], `${userData.user.username}-wrapped.png`, { type: 'image/png' });
+          navigator.share({
+            files: [file],
+            title: `${userData.user.username} Sunucudaki Özeti`,
+            text: `${userData.user.username} sunucuda ${formatNumber(userData.stats.total)} mesaj yazmış!`,
+          }).catch(err => {
+            // Fallback to download if share is cancelled
+            const link = document.createElement('a');
+            link.download = `${userData.user.username}-wrapped.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+          });
+        } else {
+          // Fallback to download for desktop
+          const link = document.createElement('a');
+          link.download = `${userData.user.username}-wrapped.png`;
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        }
+      } catch (error) {
+        console.error('Error capturing share card:', error);
+      }
     }
   };
 
@@ -271,8 +303,10 @@ export default function SummaryPage({ userData }) {
             <span className="text-2xl">←</span>
             <span className="hidden sm:inline">Ana Sayfa</span>
           </motion.a>
-          <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            {user.username}
+          <h2 className="text-lg sm:text-xl font-bold text-center">
+            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              {user.displayName || user.username}
+            </span>
           </h2>
         </div>
       </motion.div>
@@ -336,8 +370,13 @@ export default function SummaryPage({ userData }) {
             variants={itemVariants}
           >
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              {user.username}
+              {user.displayName || user.username}
             </h1>
+            {user.displayName && user.displayName !== user.username && (
+              <p className="text-lg sm:text-xl text-gray-500">
+                @{user.username}
+              </p>
+            )}
             <p className="text-xl sm:text-2xl md:text-3xl text-gray-400 font-light">
               Sunucudaki Hikâyen
             </p>
@@ -780,7 +819,12 @@ export default function SummaryPage({ userData }) {
                           e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
                         }}
                       />
-                      <span className="flex-1 truncate text-gray-100 font-medium">{item.user?.username || 'Unknown'}</span>
+                      <div className="flex-1 truncate">
+                        <span className="text-gray-100 font-medium">{item.user?.displayName || item.user?.username || 'Unknown'}</span>
+                        {item.user?.displayName && item.user?.displayName !== item.user?.username && (
+                          <span className="text-gray-500 text-xs ml-1">({item.user?.username})</span>
+                        )}
+                      </div>
                       <span className="font-bold text-gray-300 flex-shrink-0 text-xs">{formatNumber(item.value)}</span>
                     </motion.div>
                   ))}
@@ -822,7 +866,12 @@ export default function SummaryPage({ userData }) {
                           e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
                         }}
                       />
-                      <span className="flex-1 truncate text-gray-100 font-medium">{item.user?.username || 'Unknown'}</span>
+                      <div className="flex-1 truncate">
+                        <span className="text-gray-100 font-medium">{item.user?.displayName || item.user?.username || 'Unknown'}</span>
+                        {item.user?.displayName && item.user?.displayName !== item.user?.username && (
+                          <span className="text-gray-500 text-xs ml-1">({item.user?.username})</span>
+                        )}
+                      </div>
                       <span className="font-bold text-gray-300 flex-shrink-0 text-xs">{item.value}</span>
                     </motion.div>
                   ))}
@@ -864,7 +913,12 @@ export default function SummaryPage({ userData }) {
                           e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
                         }}
                       />
-                      <span className="flex-1 truncate text-gray-100 font-medium">{item.user?.username || 'Unknown'}</span>
+                      <div className="flex-1 truncate">
+                        <span className="text-gray-100 font-medium">{item.user?.displayName || item.user?.username || 'Unknown'}</span>
+                        {item.user?.displayName && item.user?.displayName !== item.user?.username && (
+                          <span className="text-gray-500 text-xs ml-1">({item.user?.username})</span>
+                        )}
+                      </div>
                       <span className="font-bold text-gray-300 flex-shrink-0 text-xs">{item.value}</span>
                     </motion.div>
                   ))}
@@ -877,50 +931,125 @@ export default function SummaryPage({ userData }) {
 
       {/* Share/Download Section */}
       <motion.section
-        id="summary-section"
-        className="relative py-20 px-4 sm:px-6 lg:px-8 min-h-screen flex flex-col items-center justify-center"
+        className="relative py-20 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={containerVariants}
       >
-        <motion.div
-          className="absolute inset-0 opacity-20 -z-10"
-          animate={{
-            background: [
-              'radial-gradient(circle at 20% 50%, rgba(59,130,246,0.2) 0%, transparent 50%)',
-              'radial-gradient(circle at 80% 80%, rgba(168,85,247,0.2) 0%, transparent 50%)',
-              'radial-gradient(circle at 20% 50%, rgba(59,130,246,0.2) 0%, transparent 50%)',
-            ],
-          }}
-          transition={{ duration: 8, repeat: Infinity }}
-        />
-
-        <motion.div
-          className="text-center space-y-8 max-w-2xl"
+        <motion.h2
+          className="text-4xl sm:text-5xl font-black text-center mb-16 bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent"
           variants={itemVariants}
         >
-          <div>
-            <h2 className="text-5xl sm:text-6xl md:text-7xl font-black mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              Bu Özeti Paylaş
-            </h2>
-            <p className="text-gray-400 text-lg">
-              Özleme göre resim indir ve sosyal ağlarda paylaş
-            </p>
-          </div>
+          Özeti Paylaş
+        </motion.h2>
 
-          <motion.button
-            onClick={handleShare}
-            className="px-10 py-5 text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-600 rounded-full border-2 border-blue-400 text-white shadow-2xl"
-            whileHover={{
-              scale: 1.08,
-              boxShadow: '0 0 50px rgba(59, 130, 246, 0.8)',
-            }}
-            whileTap={{ scale: 0.95 }}
+        <div className="flex flex-col lg:flex-row gap-12 items-center max-w-6xl">
+          {/* Share Card */}
+          <motion.div
+            id="share-card"
+            className="w-full max-w-xs bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 rounded-xl p-6 border-2 border-blue-500 shadow-2xl"
+            variants={itemVariants}
           >
-            🎬 Özeti İndir
-          </motion.button>
-        </motion.div>
+            <div className="text-center space-y-4">
+              {/* Avatar */}
+              <motion.div
+                className="flex justify-center"
+                whileHover={{ scale: 1.05 }}
+              >
+                <div className="w-24 h-24 rounded-full overflow-hidden border-3 border-blue-400 shadow-lg">
+                  <Image
+                    src={user.avatar_url || 'https://cdn.discordapp.com/embed/avatars/0.png'}
+                    alt="User Avatar"
+                    width={96}
+                    height={96}
+                    className="w-full h-full object-cover"
+                    priority
+                    unoptimized={true}
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
+                    }}
+                  />
+                </div>
+              </motion.div>
+
+              {/* Username */}
+              <div>
+                <h3 className="text-xl font-black text-white mb-1 break-words">{user.displayName || user.username}</h3>
+                {user.displayName && user.displayName !== user.username && (
+                  <p className="text-xs text-gray-400 mb-3">@{user.username}</p>
+                )}
+              </div>
+
+              {/* Role Quote Section */}
+              <div className="border-l-4 border-purple-500 bg-purple-950 bg-opacity-40 rounded pl-3 pr-3 py-2.5 space-y-1.5">
+                <p className="text-xs font-bold text-purple-300 uppercase tracking-wide">Sunucudaki Rolü</p>
+                <p className="text-sm font-black text-purple-200">{userRole.title}</p>
+                <p className="text-xs text-purple-200 italic leading-relaxed">
+                  "{userRole.description}"
+                </p>
+              </div>
+
+              {/* Stats Grid */}
+              <div className="grid grid-cols-2 gap-2 my-4">
+                <div className="bg-blue-600 bg-opacity-40 rounded p-1.5">
+                  <p className="text-gray-300 text-xs mb-0.5">Mesaj</p>
+                  <p className="text-lg font-black text-blue-300 truncate">{formatNumber(stats.total)}</p>
+                </div>
+                <div className="bg-purple-600 bg-opacity-40 rounded p-1.5">
+                  <p className="text-gray-300 text-xs mb-0.5">Gün</p>
+                  <p className="text-lg font-black text-purple-300">{stats.active_days}</p>
+                </div>
+                <div className="bg-pink-600 bg-opacity-40 rounded p-1.5">
+                  <p className="text-gray-300 text-xs mb-0.5">Sıra</p>
+                  <p className="text-lg font-black text-pink-300">#{rankings.messageCountRank || '—'}</p>
+                </div>
+                <div className="bg-cyan-600 bg-opacity-40 rounded p-1.5">
+                  <p className="text-gray-300 text-xs mb-0.5">Yüzdelik</p>
+                  <p className="text-lg font-black text-cyan-300">%{rankings.messageCountPercentile || '—'}</p>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="pt-2">
+                <p className="text-xs font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  KAH Özetin — DarkNight
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Action Buttons */}
+          <motion.div
+            className="flex flex-col gap-4 w-full max-w-sm"
+            variants={containerVariants}
+          >
+            <motion.button
+              onClick={handleShare}
+              className="px-8 py-6 text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl border-2 border-blue-400 text-white shadow-2xl"
+              whileHover={{
+                scale: 1.05,
+                boxShadow: '0 0 50px rgba(59, 130, 246, 0.8)',
+              }}
+              whileTap={{ scale: 0.95 }}
+              variants={itemVariants}
+            >
+              🎬 Paylaş / İndir
+            </motion.button>
+
+            <motion.a
+              href="/"
+              className="px-8 py-6 text-lg font-bold bg-gradient-to-r from-gray-700 to-gray-800 rounded-xl border-2 border-gray-600 text-white text-center hover:border-gray-500 transition-all"
+              whileHover={{
+                scale: 1.05,
+              }}
+              whileTap={{ scale: 0.95 }}
+              variants={itemVariants}
+            >
+              ← Ana Sayfa
+            </motion.a>
+          </motion.div>
+        </div>
       </motion.section>
     </div>
   );

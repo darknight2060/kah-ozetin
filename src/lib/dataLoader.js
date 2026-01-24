@@ -41,11 +41,12 @@ function filterDeletedUsers(users) {
  * Get user summary - combines all data sources for a specific user
  */
 export async function getUserSummary(userId) {
-  const [users, stats, social, leaderboardContext] = await Promise.all([
+  const [users, stats, social, leaderboardContext, searchUsers] = await Promise.all([
     loadJsonData('users.json'),
     loadJsonData('user_stats.json'),
     loadJsonData('user_social.json'),
     getUserRankingsWithContext(userId, 5),
+    loadJsonData('search_users.json'),
   ]);
 
   if (!users || !users[userId]) {
@@ -59,6 +60,15 @@ export async function getUserSummary(userId) {
     return null;
   }
   
+  // Get displayName from search_users.json
+  let displayName = userInfo.username;
+  if (Array.isArray(searchUsers)) {
+    const searchUser = searchUsers.find(u => u.id === userId);
+    if (searchUser && searchUser.displayName) {
+      displayName = searchUser.displayName;
+    }
+  }
+  
   const userStats = stats?.[userId] || {};
   const userSocial = social?.[userId] || {};
 
@@ -67,7 +77,7 @@ export async function getUserSummary(userId) {
 
   return {
     userId: userId,
-    user: userInfo,
+    user: { ...userInfo, displayName },
     stats: userStats,
     social: userSocial,
     rankings: rankings_data,
@@ -183,12 +193,21 @@ export async function getUsersForLeaderboard() {
  * Get user rankings with surrounding context (rank ±2)
  */
 export async function getUserRankingsWithContext(userId, limit = 5) {
-  const [stats, users] = await Promise.all([
+  const [stats, users, searchUsers] = await Promise.all([
     loadJsonData('user_stats.json'),
     loadJsonData('users.json'),
+    loadJsonData('search_users.json'),
   ]);
 
   if (!stats || !users) return null;
+
+  // Create a map of displayNames
+  const displayNameMap = {};
+  if (Array.isArray(searchUsers)) {
+    searchUsers.forEach(u => {
+      displayNameMap[u.id] = u.displayName;
+    });
+  }
 
   // Filter out deleted users
   const filteredUserIds = Object.keys(stats).filter(id => {
@@ -234,7 +253,10 @@ export async function getUserRankingsWithContext(userId, limit = 5) {
       ...item,
       rank: start + idx + 1,
       isUser: item.user_id === userId,
-      user: users[item.user_id],
+      user: {
+        ...users[item.user_id],
+        displayName: displayNameMap[item.user_id] || users[item.user_id].username,
+      },
     }));
   };
 

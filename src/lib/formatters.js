@@ -198,88 +198,130 @@ export function isNightOwl(hours) {
 export function getUserRole(userId, stats) {
   // Calculate average message length if not already there
   const avgLen = stats.len_sum && stats.total ? Math.round(stats.len_sum / stats.total) : 0;
+  const questionRatio = stats.total ? (stats.question / stats.total) : 0;
   
   const enrichedStats = {
     ...stats,
     avg_len: avgLen,
+    question_ratio: questionRatio,
   };
 
-  const roles = [
-    {
-      title: '@Mojang',
-      description: 'Oyunun kurucusu gibi liderlik yaparsın ve herkes seni takip eder',
-      condition: (stats) => stats.total > 10000 && stats.active_days > 300,
-    },
-    {
-      title: '@Ejderha',
-      description: 'Efsanevi varlık! En güçlülerinden birisin, nadirsin ve çok özelsin',
-      condition: (stats) => stats.total > 8000 && stats.active_days > 280,
-    },
-    {
-      title: '@Herobrine',
-      description: 'Gizemli ve efsanevi! Kimse tam olarak neredesin bilmiyor ama hepsi senden bahsediyor',
-      condition: (stats) => stats.active_days > 250 && stats.total > 5000,
-    },
-    {
-      title: '@Warden',
-      description: 'Sessizce güçlü korumacı! Tehditkâr görünüşün altında iyiliğin var',
-      condition: (stats) => stats.total > 7000 && stats.question < stats.total * 0.15,
-    },
-    {
-      title: '@Yaşlı Gardiyan',
-      description: 'Sunucunun bilge kişisi! Deneyimli ve herkese rehberlik edersin',
-      condition: (stats) => stats.active_days > 200,
-    },
-    {
-      title: '@Golem',
-      description: 'Güçlü ve koruyucu! Dostça tavırların herkesi rahatlatıyor',
-      condition: (stats) => stats.avg_len > 100,
-    },
-    {
-      title: '@Blaze',
-      description: 'Ateşli ve enerjik! Hızlı konuşur, hızlı hareketsiz... her zaman hareket halinde',
-      condition: (stats) => stats.total > 3000 && stats.avg_len < 50,
-    },
-    {
-      title: '@Creeper',
-      description: 'Sessiz ve tehlikeli! Beklenmedik anda parlayıp herkesi şaşırtırsın',
-      condition: (stats) => stats.total > 2000 && stats.active_days > 150,
-    },
-    {
-      title: '@Ahtapot',
-      description: 'Çok yeterli! Bir seferde pek çok şey yapabilirsin, meraklı ve çok beceriklsin',
-      condition: (stats) => stats.question > stats.total * 0.3,
-    },
-    {
-      title: '@Kurbağa',
-      description: 'Zıplayıcı ve dostça! Yanında olmak eğlenceli ve keyifli',
-      condition: (stats) => stats.total > 1000 && stats.active_days > 100,
-    },
-    {
-      title: '@Aksolotl',
-      description: 'Nadir ve eğlenceli! Etkileşimlerinde orijinal ve neşelisin',
-      condition: (stats) => stats.total > 500 && stats.active_days > 50,
-    },
-    {
-      title: '@Wither',
-      description: 'Yıkıcı ve tehlikeli! Etrafında işler değişir, etkili bir varlıksın',
-      condition: (stats) => true, // Default fallback
-    },
-  ];
+  // Score-based role assignment for better distribution
+  const roleScores = [];
+  
+  // @Mojang - Ultimate leader (highest activity)
+  roleScores.push({
+    title: '@Mojang',
+    description: 'Oyunun kurucusu gibi liderlik yaparsın ve herkes seni takip eder',
+    score: (enrichedStats.total > 8000 ? 100 : 0) + 
+           (enrichedStats.active_days > 280 ? 100 : 0),
+  });
 
-  // Hash the userId deterministically
-  const hash = userId
-    .split('')
-    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  // @Ejderha - Legendary and rare
+  roleScores.push({
+    title: '@Ejderha',
+    description: 'Efsanevi varlık! En güçlülerinden birisin, nadirsin ve çok özelsin',
+    score: (enrichedStats.total > 6000 && enrichedStats.total <= 8000 ? 150 : 0) +
+           (enrichedStats.active_days > 250 ? 80 : 0),
+  });
 
-  // Calculate role based on stats first, then hash if no match
-  for (const role of roles.slice(0, -1)) {
-    if (role.condition(enrichedStats)) {
-      return role;
+  // @Herobrine - Mysterious
+  roleScores.push({
+    title: '@Herobrine',
+    description: 'Gizemli ve efsanevi! Kimse tam olarak neredesin bilmiyor ama hepsi senden bahsediyor',
+    score: (enrichedStats.active_days > 200 && enrichedStats.active_days <= 250 ? 120 : 0) +
+           (enrichedStats.total > 4000 && enrichedStats.total <= 6000 ? 100 : 0),
+  });
+
+  // @Warden - Quiet but strong
+  roleScores.push({
+    title: '@Warden',
+    description: 'Sessizce güçlü korumacı! Tehditkâr görünüşün altında iyiliğin var',
+    score: (enrichedStats.avg_len > 120 ? 100 : 0) +
+           (enrichedStats.question_ratio < 0.1 ? 80 : 0) +
+           (enrichedStats.total > 3000 && enrichedStats.total <= 6000 ? 60 : 0),
+  });
+
+  // @Yaşlı Gardiyan - Wise and experienced
+  roleScores.push({
+    title: '@Yaşlı Gardiyan',
+    description: 'Sunucunun bilge kişisi! Deneyimli ve herkese rehberlik edersin',
+    score: (enrichedStats.active_days > 180 && enrichedStats.active_days <= 250 ? 130 : 0) +
+           (enrichedStats.total > 2000 && enrichedStats.total <= 5000 ? 70 : 0),
+  });
+
+  // @Golem - Big and protective
+  roleScores.push({
+    title: '@Golem',
+    description: 'Güçlü ve koruyucu! Dostça tavırların herkesi rahatlatıyor',
+    score: (enrichedStats.avg_len > 100 && enrichedStats.avg_len <= 150 ? 140 : 0) +
+           (enrichedStats.total > 1500 && enrichedStats.total <= 4000 ? 80 : 0),
+  });
+
+  // @Blaze - Fast and energetic
+  roleScores.push({
+    title: '@Blaze',
+    description: 'Ateşli ve enerjik! Hızlı konuşur, hızlı hareketsiz... her zaman hareket halinde',
+    score: (enrichedStats.total > 2500 && enrichedStats.total <= 5000 ? 110 : 0) +
+           (enrichedStats.avg_len < 60 ? 100 : 0),
+  });
+
+  // @Creeper - Unexpected and impactful
+  roleScores.push({
+    title: '@Creeper',
+    description: 'Sessiz ve tehlikeli! Beklenmedik anda parlayıp herkesi şaşırtırsın',
+    score: (enrichedStats.total > 1500 && enrichedStats.total <= 3500 ? 120 : 0) +
+           (enrichedStats.active_days > 120 && enrichedStats.active_days <= 200 ? 100 : 0),
+  });
+
+  // @Ahtapot - Curious and multi-talented
+  roleScores.push({
+    title: '@Ahtapot',
+    description: 'Çok yeterli! Bir seferde pek çok şey yapabilirsin, meraklı ve çok beceriklsin',
+    score: (enrichedStats.question_ratio > 0.25 ? 150 : 0) +
+           (enrichedStats.total > 1000 ? 60 : 0),
+  });
+
+  // @Kurbağa - Playful and friendly
+  roleScores.push({
+    title: '@Kurbağa',
+    description: 'Zıplayıcı ve dostça! Yanında olmak eğlenceli ve keyifli',
+    score: (enrichedStats.total > 800 && enrichedStats.total <= 2500 ? 130 : 0) +
+           (enrichedStats.active_days > 80 && enrichedStats.active_days <= 180 ? 110 : 0),
+  });
+
+  // @Aksolotl - Rare and unique
+  roleScores.push({
+    title: '@Aksolotl',
+    description: 'Nadir ve eğlenceli! Etkileşimlerinde orijinal ve neşelisin',
+    score: (enrichedStats.total > 300 && enrichedStats.total <= 1200 ? 140 : 0) +
+           (enrichedStats.active_days > 40 && enrichedStats.active_days <= 120 ? 120 : 0),
+  });
+
+  // @Wither - Destructive and impactful
+  roleScores.push({
+    title: '@Wither',
+    description: 'Yıkıcı ve tehlikeli! Etrafında işler değişir, etkili bir varlıksın',
+    score: (enrichedStats.total > 100 && enrichedStats.total <= 800 ? 140 : 0) +
+           (enrichedStats.active_days > 20 && enrichedStats.active_days <= 100 ? 130 : 0),
+  });
+
+  // Find the role with highest score
+  const maxScore = Math.max(...roleScores.map(r => r.score));
+  
+  // If a clear winner exists, use it
+  if (maxScore > 0) {
+    // Get all roles with max score and use userId hash to pick one deterministically
+    const winningRoles = roleScores.filter(r => r.score === maxScore);
+    if (winningRoles.length === 1) {
+      return winningRoles[0];
     }
+    // If multiple roles tie, use hash to pick one
+    const hash = userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return winningRoles[hash % winningRoles.length];
   }
 
-  // If no condition matches, use hash to pick from remaining roles
-  const roleIndex = hash % (roles.length - 1);
-  return roles[roleIndex];
+  // Fallback: use hash to pick any role for new/very inactive users
+  const hash = userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return roleScores[hash % roleScores.length];
 }
