@@ -11,15 +11,14 @@ import {
   getActivityPercentage,
   formatNumber,
   getWordStats,
-  getEmojiStats,
   getMostActiveMonth,
   getAverageMessagesPerDay,
   getPeakActivityCombo,
   getMonthName,
   getTotalUniqueWords,
-  getTotalUniqueEmojis,
   getTopDays,
   isNightOwl,
+  getUserRole,
 } from '@/lib/formatters';
 
 const containerVariants = {
@@ -145,10 +144,11 @@ export default function SummaryPage({ userData }) {
   const social = userData.social || {};
   const rankings = userData.rankings || {};
 
-  const topWords = getWordStats(stats.words, 5);
-  const topEmojis = getEmojiStats(stats.emojis, 6);
+  const topWords = getWordStats(stats.words, 8);
+  const userRole = getUserRole(userData.userId, stats);
   
   const daysSince = getDaysSinceFirstMessage(stats.first, stats.last);
+  const yearsOnServer = (daysSince / 365).toFixed(1);
   const activityPercentage = getActivityPercentage(stats.active_days, daysSince);
   const avgMessageLength = stats.total > 0 
     ? Math.round(stats.len_sum / stats.total)
@@ -173,7 +173,6 @@ export default function SummaryPage({ userData }) {
   const peakActivityCombo = getPeakActivityCombo(stats.combos);
   const topDays = getTopDays(stats.days, 3);
   const totalUniqueWords = getTotalUniqueWords(stats.words);
-  const totalUniqueEmojis = getTotalUniqueEmojis(stats.emojis);
   const nightOwl = isNightOwl(stats.hours);
 
   if (!userData) {
@@ -266,7 +265,7 @@ export default function SummaryPage({ userData }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 relative flex items-center justify-center">
           <motion.a
             href="/"
-            className="absolute left-4 sm:left-6 lg:left-8 flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+            className="absolute left-4 sm:left-6 lg:left-8 top-1/2 -translate-y-1/2 flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
             whileHover={{ x: -5 }}
           >
             <span className="text-2xl">←</span>
@@ -380,6 +379,23 @@ export default function SummaryPage({ userData }) {
           >
             Temel Metriklerin
           </motion.h2>
+
+          {/* User Role Card */}
+          <motion.div
+            className="mb-8 stat-card p-8 rounded-2xl backdrop-blur-sm border-2 border-yellow-400 bg-gradient-to-r from-yellow-900 from-20% via-blue-900 via-50% to-purple-900 to-80%"
+            variants={itemVariants}
+            whileHover={{ y: -5, boxShadow: '0 0 40px rgba(250, 204, 21, 0.4)' }}
+          >
+            <div className="text-center">
+              <p className="text-gray-300 text-lg mb-2">👑 Sunucudaki Rolün</p>
+              <p className="text-5xl sm:text-6xl font-black bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent mb-4">
+                {userRole.title}
+              </p>
+              <p className="text-gray-200 text-lg italic">
+                {userRole.description}
+              </p>
+            </div>
+          </motion.div>
 
           <motion.div
             className="grid grid-cols-1 md:grid-cols-4 gap-6"
@@ -497,27 +513,32 @@ export default function SummaryPage({ userData }) {
             </div>
           </motion.div>
 
-          {/* Row 3: Top Emojis */}
+          {/* Row 3: Message Timeline */}
           <motion.div
-            className="stat-card p-8 rounded-2xl backdrop-blur-sm"
-            variants={itemVariants}
-            whileHover={{ y: -5 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            variants={containerVariants}
           >
-            <p className="text-gray-400 text-lg mb-6">😊 En Çok Kullanılan Emojiler</p>
-            <div className="flex flex-wrap gap-6 justify-center sm:justify-start">
-              {topEmojis.map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  className="flex flex-col items-center"
-                  whileHover={{ scale: 1.3 }}
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 2.5, repeat: Infinity, delay: idx * 0.15 }}
-                >
-                  <span className="text-5xl mb-2">{item.emoji}</span>
-                  <span className="text-gray-400 text-xs font-medium">×{item.count}</span>
-                </motion.div>
-              ))}
-            </div>
+            {/* First Message */}
+            <motion.div
+              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+              variants={itemVariants}
+              whileHover={{ y: -5 }}
+            >
+              <p className="text-gray-400 text-lg mb-4">📅 İlk Mesaj</p>
+              <p className="text-3xl font-black text-cyan-400 mb-2">{formatDate(stats.first)}</p>
+              <p className="text-gray-500 text-sm">Sunucudaki başlangıcın</p>
+            </motion.div>
+
+            {/* Last Message */}
+            <motion.div
+              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+              variants={itemVariants}
+              whileHover={{ y: -5 }}
+            >
+              <p className="text-gray-400 text-lg mb-4">⏱️ Son Mesaj</p>
+              <p className="text-3xl font-black text-teal-400 mb-2">{formatDate(stats.last)}</p>
+              <p className="text-gray-500 text-sm">Son aktivite zamanı</p>
+            </motion.div>
           </motion.div>
         </div>
       </motion.section>
@@ -608,17 +629,6 @@ export default function SummaryPage({ userData }) {
               <p className="text-gray-500 text-xs mt-3">farklı kelime</p>
             </motion.div>
 
-            {/* Unique Emojis */}
-            <motion.div
-              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
-              variants={itemVariants}
-              whileHover={{ y: -5 }}
-            >
-              <p className="text-gray-400 text-xs sm:text-sm mb-3">😊 Benzersiz Emojiler</p>
-              <p className="text-5xl font-black text-emerald-400">{formatNumber(totalUniqueEmojis)}</p>
-              <p className="text-gray-500 text-xs mt-3">farklı emoji</p>
-            </motion.div>
-
             {/* Message Range */}
             <motion.div
               className="stat-card p-6 rounded-2xl backdrop-blur-sm"
@@ -630,6 +640,17 @@ export default function SummaryPage({ userData }) {
                 {stats.min_len}-{stats.max_len}
               </p>
               <p className="text-gray-500 text-xs mt-3">karakter</p>
+            </motion.div>
+
+            {/* Message Range */}
+            <motion.div
+              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
+              variants={itemVariants}
+              whileHover={{ y: -5 }}
+            >
+              <p className="text-gray-400 text-xs sm:text-sm mb-3">⏳ Sunucuda Geçen Süre</p>
+              <p className="text-4xl font-black text-lime-400">{yearsOnServer}</p>
+              <p className="text-gray-500 text-xs mt-3">yıl ({daysSince} gün)</p>
             </motion.div>
           </motion.div>
         </div>

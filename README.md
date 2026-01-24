@@ -1,3 +1,9 @@
+
+
+
+
+
+
+
 - özet indir/paylaş
-- ilk mesajın son mesajın falan olsa
-- sunnucudaki rolün (katkın)
+- responsive

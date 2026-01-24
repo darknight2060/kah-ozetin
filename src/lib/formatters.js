@@ -191,3 +191,95 @@ export function isNightOwl(hours) {
   const nightPercentage = (nightMessages / totalMessages) * 100;
   return nightPercentage > 40;
 }
+
+/**
+ * Get a unique role/nickname based on user statistics
+ */
+export function getUserRole(userId, stats) {
+  // Calculate average message length if not already there
+  const avgLen = stats.len_sum && stats.total ? Math.round(stats.len_sum / stats.total) : 0;
+  
+  const enrichedStats = {
+    ...stats,
+    avg_len: avgLen,
+  };
+
+  const roles = [
+    {
+      title: '@Mojang',
+      description: 'Oyunun kurucusu gibi liderlik yaparsın ve herkes seni takip eder',
+      condition: (stats) => stats.total > 10000 && stats.active_days > 300,
+    },
+    {
+      title: '@Ejderha',
+      description: 'Efsanevi varlık! En güçlülerinden birisin, nadirsin ve çok özelsin',
+      condition: (stats) => stats.total > 8000 && stats.active_days > 280,
+    },
+    {
+      title: '@Herobrine',
+      description: 'Gizemli ve efsanevi! Kimse tam olarak neredesin bilmiyor ama hepsi senden bahsediyor',
+      condition: (stats) => stats.active_days > 250 && stats.total > 5000,
+    },
+    {
+      title: '@Warden',
+      description: 'Sessizce güçlü korumacı! Tehditkâr görünüşün altında iyiliğin var',
+      condition: (stats) => stats.total > 7000 && stats.question < stats.total * 0.15,
+    },
+    {
+      title: '@Yaşlı Gardiyan',
+      description: 'Sunucunun bilge kişisi! Deneyimli ve herkese rehberlik edersin',
+      condition: (stats) => stats.active_days > 200,
+    },
+    {
+      title: '@Golem',
+      description: 'Güçlü ve koruyucu! Dostça tavırların herkesi rahatlatıyor',
+      condition: (stats) => stats.avg_len > 100,
+    },
+    {
+      title: '@Blaze',
+      description: 'Ateşli ve enerjik! Hızlı konuşur, hızlı hareketsiz... her zaman hareket halinde',
+      condition: (stats) => stats.total > 3000 && stats.avg_len < 50,
+    },
+    {
+      title: '@Creeper',
+      description: 'Sessiz ve tehlikeli! Beklenmedik anda parlayıp herkesi şaşırtırsın',
+      condition: (stats) => stats.total > 2000 && stats.active_days > 150,
+    },
+    {
+      title: '@Ahtapot',
+      description: 'Çok yeterli! Bir seferde pek çok şey yapabilirsin, meraklı ve çok beceriklsin',
+      condition: (stats) => stats.question > stats.total * 0.3,
+    },
+    {
+      title: '@Kurbağa',
+      description: 'Zıplayıcı ve dostça! Yanında olmak eğlenceli ve keyifli',
+      condition: (stats) => stats.total > 1000 && stats.active_days > 100,
+    },
+    {
+      title: '@Aksolotl',
+      description: 'Nadir ve eğlenceli! Etkileşimlerinde orijinal ve neşelisin',
+      condition: (stats) => stats.total > 500 && stats.active_days > 50,
+    },
+    {
+      title: '@Wither',
+      description: 'Yıkıcı ve tehlikeli! Etrafında işler değişir, etkili bir varlıksın',
+      condition: (stats) => true, // Default fallback
+    },
+  ];
+
+  // Hash the userId deterministically
+  const hash = userId
+    .split('')
+    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+
+  // Calculate role based on stats first, then hash if no match
+  for (const role of roles.slice(0, -1)) {
+    if (role.condition(enrichedStats)) {
+      return role;
+    }
+  }
+
+  // If no condition matches, use hash to pick from remaining roles
+  const roleIndex = hash % (roles.length - 1);
+  return roles[roleIndex];
+}

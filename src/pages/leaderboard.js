@@ -234,7 +234,7 @@ export default function LeaderboardPage({ initialData }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 relative flex items-center justify-center">
           <Link href="/">
             <motion.div
-              className="absolute left-4 sm:left-6 lg:left-8 flex items-center gap-2 text-gray-400 hover:text-white transition-colors cursor-pointer"
+              className="absolute left-4 sm:left-6 lg:left-8 top-1/2 -translate-y-1/2 flex items-center gap-2 text-gray-400 hover:text-white transition-colors cursor-pointer"
               whileHover={{ x: -5 }}
             >
               <span className="text-2xl">←</span>

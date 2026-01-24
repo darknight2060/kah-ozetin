@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -72,11 +73,14 @@ const searchUsers = (query, users) => {
 };
 
 export default function Home() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isFocused, setIsFocused] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isNavigating, setIsNavigating] = useState(false);
 
   useEffect(() => {
     fetch("/search_users.json")
@@ -99,16 +103,17 @@ export default function Home() {
     }
   };
 
-  const handleSelectUser = (userId) => {
-    window.location.href = `/summary/${userId}`;
+  const handleSelectUser = (user) => {
+    setSelectedUser(user);
+    setSearchQuery("");
+    setSuggestions([]);
+    setIsFocused(false);
   };
 
-  const handleSubmit = () => {
-    if (searchQuery.trim()) {
-      const results = searchUsers(searchQuery, users);
-      if (results.length > 0) {
-        handleSelectUser(results[0].id);
-      }
+  const handleSubmit = async () => {
+    if (selectedUser) {
+      setIsNavigating(true);
+      await router.push(`/summary/${selectedUser.id}`);
     }
   };
 
@@ -215,7 +220,7 @@ export default function Home() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
             >
-              Discord Yolculuğun
+              Discord Yolculuğunu
             </motion.h1>
             <motion.h2
               className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent"
@@ -231,7 +236,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              Kişiselleştirilmiş KAH özetinizi oluşturun ve istatistiklerinizi görün
+              Kişisel KAH özetinizi oluşturun ve istatistiklerinizi görün
             </motion.p>
           </motion.div>
 
@@ -240,95 +245,144 @@ export default function Home() {
             className="w-full max-w-2xl mx-auto"
             variants={itemVariants}
           >
-            {/* Search Container */}
-            <motion.div
-              className="relative backdrop-blur-xl bg-gray-900/40 rounded-2xl p-8 border border-gray-700/50 shadow-2xl hover:border-gray-600/50 transition"
-              whileHover={{ borderColor: "rgba(147, 51, 234, 0.3)" }}
-            >
-              {/* Input Wrapper */}
-              <div className="relative mb-4">
-                <motion.input
-                  type="text"
-                  placeholder="Kullanıcı adı, ID, görünen ad veya arama anahtarı..."
-                  value={searchQuery}
-                  onChange={handleInputChange}
-                  onKeyPress={handleKeyPress}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-                  className="w-full px-6 py-4 rounded-xl bg-gray-800/50 text-white placeholder-gray-400 border-2 border-gray-700 focus:border-purple-500 focus:outline-none transition text-lg"
-                  whileFocus={{ scale: 1.02 }}
-                />
+            {!selectedUser ? (
+              <>
+                {/* Search Container */}
                 <motion.div
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
+                  className="relative backdrop-blur-xl bg-gray-900/40 rounded-2xl p-8 border border-gray-700/50 shadow-2xl hover:border-gray-600/50 transition"
+                  whileHover={{ borderColor: "rgba(147, 51, 234, 0.3)" }}
                 >
-                  🔍
-                </motion.div>
-              </div>
-
-              {/* Suggestions Dropdown */}
-              {isFocused && suggestions.length > 0 && (
-                <motion.div
-                  className="absolute top-full left-8 right-8 mt-2 bg-gray-800/90 backdrop-blur-xl border border-gray-700/50 rounded-xl shadow-2xl z-50 max-h-96 overflow-y-auto"
-                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {suggestions.map((user, index) => (
+                  {/* Input Wrapper */}
+                  <div className="relative mb-4">
+                    <motion.input
+                      type="text"
+                      placeholder="Kullanıcı adı, ID, görünen ad veya arama anahtarı..."
+                      value={searchQuery}
+                      onChange={handleInputChange}
+                      onKeyPress={handleKeyPress}
+                      onFocus={() => setIsFocused(true)}
+                      onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+                      className="w-full px-6 py-4 rounded-xl bg-gray-800/50 text-white placeholder-gray-400 border-2 border-gray-700 focus:border-purple-500 focus:outline-none transition text-lg"
+                      whileFocus={{ scale: 1.02 }}
+                    />
                     <motion.div
-                      key={user.id}
-                      className="px-6 py-3 border-b border-gray-700/30 last:border-b-0 hover:bg-purple-600/20 cursor-pointer flex items-center gap-4 transition group"
-                      onClick={() => handleSelectUser(user.id)}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      whileHover={{ x: 10 }}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5 }}
                     >
-                      <img
-                        src={user.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}
-                        alt={user.displayName}
-                        className="w-10 h-10 rounded-full border border-purple-500/50"
-                        onError={(e) => {
-                          e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
-                        }}
-                      />
-                      <div className="flex-1">
-                        <div className="font-semibold text-white group-hover:text-purple-300 transition">
-                          {user.displayName}
-                        </div>
-                        <div className="text-sm text-gray-400">@{user.username}</div>
-                      </div>
-                      <div className="text-gray-500">→</div>
+                      🔍
                     </motion.div>
-                  ))}
-                </motion.div>
-              )}
+                  </div>
 
-              {/* Empty State */}
-              {isFocused && searchQuery.trim() && suggestions.length === 0 && (
-                <motion.div
-                  className="absolute top-full left-8 right-8 mt-2 bg-gray-800/90 backdrop-blur-xl border border-gray-700/50 rounded-xl shadow-2xl z-50 p-6 text-center"
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <p className="text-gray-400">Kullanıcı bulunamadı</p>
+                  {/* Suggestions Dropdown */}
+                  {isFocused && suggestions.length > 0 && (
+                    <motion.div
+                      className="absolute top-full left-8 right-8 mt-2 bg-gray-800/90 backdrop-blur-xl border border-gray-700/50 rounded-xl shadow-2xl z-50 max-h-96 overflow-y-auto"
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {suggestions.map((user, index) => (
+                        <motion.div
+                          key={user.id}
+                          className="px-6 py-3 border-b border-gray-700/30 last:border-b-0 hover:bg-purple-600/20 cursor-pointer flex items-center gap-4 transition group"
+                          onClick={() => handleSelectUser(user)}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                          whileHover={{ x: 10 }}
+                        >
+                          <img
+                            src={user.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}
+                            alt={user.displayName}
+                            className="w-10 h-10 rounded-full border border-purple-500/50"
+                            onError={(e) => {
+                              e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
+                            }}
+                          />
+                          <div className="flex-1">
+                            <div className="font-semibold text-white group-hover:text-purple-300 transition">
+                              {user.displayName}
+                            </div>
+                            <div className="text-sm text-gray-400">@{user.username}</div>
+                          </div>
+                          <div className="text-gray-500">→</div>
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  )}
+
+                  {/* Empty State */}
+                  {isFocused && searchQuery.trim() && suggestions.length === 0 && (
+                    <motion.div
+                      className="absolute top-full left-8 right-8 mt-2 bg-gray-800/90 backdrop-blur-xl border border-gray-700/50 rounded-xl shadow-2xl z-50 p-6 text-center"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      <p className="text-gray-400">Kullanıcı bulunamadı</p>
+                    </motion.div>
+                  )}
                 </motion.div>
-              )}
-            </motion.div>
+              </>
+            ) : null}
+
+            {/* Selected User Card */}
+            {selectedUser && (
+              <motion.div
+                className="mt-6 backdrop-blur-xl bg-gradient-to-r from-purple-600/20 to-cyan-600/20 rounded-xl p-4 border border-purple-500/50 flex items-center gap-4"
+                initial={{ opacity: 0, y: -10, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <img
+                  src={selectedUser.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}
+                  alt={selectedUser.displayName}
+                  className="w-12 h-12 rounded-full border border-purple-500/50"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
+                  }}
+                />
+                <div className="flex-1">
+                  <div className="font-semibold text-white">{selectedUser.displayName}</div>
+                  <div className="text-sm text-gray-400">@{selectedUser.username}</div>
+                </div>
+                <motion.button
+                  onClick={() => setSelectedUser(null)}
+                  className="text-gray-400 hover:text-white transition"
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  ✕
+                </motion.button>
+              </motion.div>
+            )}
 
             {/* Search Button */}
             <motion.button
               onClick={handleSubmit}
-              className="w-full mt-6 px-8 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold text-lg hover:shadow-2xl hover:shadow-purple-500/50 transition transform"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              disabled={!selectedUser || isNavigating}
+              className={`w-full mt-6 px-8 py-4 rounded-xl font-bold text-lg transition transform ${
+                selectedUser && !isNavigating
+                  ? 'bg-gradient-to-r from-purple-600 to-cyan-600 text-white hover:shadow-2xl hover:shadow-purple-500/50'
+                  : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+              }`}
+              whileHover={selectedUser && !isNavigating ? { scale: 1.05 } : {}}
+              whileTap={selectedUser && !isNavigating ? { scale: 0.95 } : {}}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.6 }}
             >
-              ✨ Özetimi Oluştur
+              {isNavigating ? (
+                <motion.div
+                  className="flex items-center justify-center gap-2"
+                  animate={{ opacity: [1, 0.5, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  <div className="w-4 h-4 border-2 border-purple-300 border-t-white rounded-full animate-spin" />
+                  Yükleniyor...
+                </motion.div>
+              ) : '✨ Özetimi Oluştur'}
             </motion.button>
           </motion.div>
 

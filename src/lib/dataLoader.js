@@ -66,6 +66,7 @@ export async function getUserSummary(userId) {
   const rankings_data = calculateRankings(userId, stats);
 
   return {
+    userId: userId,
     user: userInfo,
     stats: userStats,
     social: userSocial,
