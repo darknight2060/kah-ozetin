@@ -73,7 +73,7 @@ export async function getUserSummary(userId) {
   const userSocial = social?.[userId] || {};
 
   // Calculate rankings for this user
-  const rankings_data = calculateRankings(userId, stats);
+  const rankings_data = calculateRankings(userId, stats, users);
 
   return {
     userId: userId,
@@ -88,13 +88,17 @@ export async function getUserSummary(userId) {
 /**
  * Calculate user rankings and percentiles
  */
-function calculateRankings(userId, statsData) {
+function calculateRankings(userId, statsData, usersData) {
   if (!statsData || !statsData[userId]) {
     return {};
   }
 
   const userStats = statsData[userId];
-  const allUserIds = Object.keys(statsData);
+  // Filter out deleted users
+  const allUserIds = Object.keys(statsData).filter(id => {
+    const user = usersData?.[id];
+    return user && !isDeletedUser(user.username);
+  });
   const totalUsers = allUserIds.length;
 
   // Calculate message count rank

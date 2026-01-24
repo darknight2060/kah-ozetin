@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -27,6 +28,9 @@ const itemVariants = {
 const CHUNK_SIZE = 15;
 
 export default function LeaderboardPage({ initialData }) {
+  const pageTitle = "Sıralama - Kah Özetin";
+  const pageDescription = "Sunucu kullanıcılarının mesaj sayısı, aktivite günü ve ortalama mesaj uzunluğu sıralaması";
+  
   const [data, setData] = useState({
     message_count: initialData?.items || [],
     active_days: [],
@@ -202,6 +206,18 @@ export default function LeaderboardPage({ initialData }) {
   const activeTabConfig = tabConfig.find(t => t.id === activeTab);
 
   return (
+    <>
+      <Head>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+      </Head>
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white overflow-hidden">
       <style>{`
         @keyframes aurora {
@@ -340,6 +356,7 @@ export default function LeaderboardPage({ initialData }) {
         </motion.div>
       </motion.div>
     </div>
+    </>
   );
 }
 

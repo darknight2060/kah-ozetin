@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import Head from "next/head";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -74,6 +75,9 @@ const searchUsers = (query, users) => {
 
 export default function Home() {
   const router = useRouter();
+  const pageTitle = "Kah Özetin - Sunucu İstatistikleri";
+  const pageDescription = "Discord sunucusu kullanıcı istatistikleri, sıralamalar ve detaylı analiz";
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [users, setUsers] = useState([]);
@@ -124,6 +128,18 @@ export default function Home() {
   };
 
   return (
+    <>
+      <Head>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+      </Head>
     <div className={`${geistSans.className} ${geistMono.className}`}>
       {/* Gradient Background */}
       <div className="fixed inset-0 bg-gradient-to-b from-gray-950 via-gray-900 to-black z-0"></div>
@@ -426,5 +442,6 @@ export default function Home() {
         </motion.section>
       </main>
     </div>
+    </>
   );
 }

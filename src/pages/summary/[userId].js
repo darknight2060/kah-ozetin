@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import html2canvas from 'html2canvas-pro';
@@ -104,6 +105,8 @@ const slideInVariants = {
 };
 
 export default function SummaryPage({ userData }) {
+  const pageTitle = `${userData?.user?.displayName || 'Kullanıcı'} - Kah Özetin`;
+  const pageDescription = `${userData?.user?.displayName || 'Kullanıcı'} sunucudaki istatistikleri ve detaylı analizi`;
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -158,6 +161,11 @@ export default function SummaryPage({ userData }) {
 
   if (!userData || !userData.user) {
     return (
+      <>
+        <Head>
+          <title>Kullanıcı Bulunamadı - Kah Özetin</title>
+          <meta name="description" content="Aradığınız kullanıcı bulunamadı" />
+        </Head>
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black flex items-center justify-center text-white">
         <motion.div
           initial={{ opacity: 0 }}
@@ -167,6 +175,7 @@ export default function SummaryPage({ userData }) {
           <p>Kullanıcı bulunamadı</p>
         </motion.div>
       </div>
+      </>
     );
   }
 
@@ -222,6 +231,18 @@ export default function SummaryPage({ userData }) {
   }
 
   return (
+    <>
+      <Head>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+      </Head>
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white overflow-hidden">
       <style>{`
         @keyframes aurora {
@@ -948,21 +969,21 @@ export default function SummaryPage({ userData }) {
           {/* Share Card */}
           <motion.div
             id="share-card"
-            className="w-full max-w-xs bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 rounded-xl p-6 border-2 border-blue-500 shadow-2xl"
+            className="w-full max-w-xs bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 rounded-lg p-5 border-2 border-blue-500 shadow-2xl"
             variants={itemVariants}
           >
-            <div className="text-center space-y-4">
+            <div className="text-center space-y-3">
               {/* Avatar */}
               <motion.div
                 className="flex justify-center"
                 whileHover={{ scale: 1.05 }}
               >
-                <div className="w-24 h-24 rounded-full overflow-hidden border-3 border-blue-400 shadow-lg">
+                <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-blue-400 shadow-lg">
                   <Image
                     src={user.avatar_url || 'https://cdn.discordapp.com/embed/avatars/0.png'}
                     alt="User Avatar"
-                    width={96}
-                    height={96}
+                    width={80}
+                    height={80}
                     className="w-full h-full object-cover"
                     priority
                     unoptimized={true}
@@ -974,46 +995,47 @@ export default function SummaryPage({ userData }) {
               </motion.div>
 
               {/* Username */}
-              <div>
-                <h3 className="text-xl font-black text-white mb-1 break-words">{user.displayName || user.username}</h3>
+              <div className="pt-1">
+                <h3 className="text-lg font-black text-white mb-0.5 break-words">{user.displayName || user.username}</h3>
                 {user.displayName && user.displayName !== user.username && (
-                  <p className="text-xs text-gray-400 mb-3">@{user.username}</p>
+                  <p className="text-xs text-gray-400">@{user.username}</p>
                 )}
               </div>
 
               {/* Role Quote Section */}
-              <div className="border-l-4 border-purple-500 bg-purple-950 bg-opacity-40 rounded pl-3 pr-3 py-2.5 space-y-1.5">
-                <p className="text-xs font-bold text-purple-300 uppercase tracking-wide">Sunucudaki Rolü</p>
-                <p className="text-sm font-black text-purple-200">{userRole.title}</p>
-                <p className="text-xs text-purple-200 italic leading-relaxed">
+              <div className="border-l-4 border-purple-500 bg-purple-950 bg-opacity-40 rounded pl-2.5 pr-2.5 py-2 space-y-1">
+                <div className="flex items-baseline gap-1">
+                  <p className="text-sm font-black text-purple-200">{userRole.title}</p>
+                </div>
+                <p className="text-xs text-purple-200 italic leading-tight">
                   "{userRole.description}"
                 </p>
               </div>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-2 gap-2 my-4">
-                <div className="bg-blue-600 bg-opacity-40 rounded p-1.5">
+              <div className="grid grid-cols-2 gap-1.5 my-3">
+                <div className="bg-blue-600 bg-opacity-40 rounded p-1">
                   <p className="text-gray-300 text-xs mb-0.5">Mesaj</p>
-                  <p className="text-lg font-black text-blue-300 truncate">{formatNumber(stats.total)}</p>
+                  <p className="text-base font-black text-blue-300 truncate">{formatNumber(stats.total)}</p>
                 </div>
-                <div className="bg-purple-600 bg-opacity-40 rounded p-1.5">
+                <div className="bg-purple-600 bg-opacity-40 rounded p-1">
                   <p className="text-gray-300 text-xs mb-0.5">Gün</p>
-                  <p className="text-lg font-black text-purple-300">{stats.active_days}</p>
+                  <p className="text-base font-black text-purple-300">{stats.active_days}</p>
                 </div>
-                <div className="bg-pink-600 bg-opacity-40 rounded p-1.5">
+                <div className="bg-pink-600 bg-opacity-40 rounded p-1">
                   <p className="text-gray-300 text-xs mb-0.5">Sıra</p>
-                  <p className="text-lg font-black text-pink-300">#{rankings.messageCountRank || '—'}</p>
+                  <p className="text-base font-black text-pink-300">#{rankings.messageCountRank || '—'}</p>
                 </div>
-                <div className="bg-cyan-600 bg-opacity-40 rounded p-1.5">
+                <div className="bg-cyan-600 bg-opacity-40 rounded p-1">
                   <p className="text-gray-300 text-xs mb-0.5">Yüzdelik</p>
-                  <p className="text-lg font-black text-cyan-300">%{rankings.messageCountPercentile || '—'}</p>
+                  <p className="text-base font-black text-cyan-300">%{rankings.messageCountPercentile || '—'}</p>
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="pt-2">
+              <div className="pt-1">
                 <p className="text-xs font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  KAH Özetin — DarkNight
+                  KAH Özetin — @DarkNight
                 </p>
               </div>
             </div>
@@ -1052,6 +1074,7 @@ export default function SummaryPage({ userData }) {
         </div>
       </motion.section>
     </div>
+    </>
   );
 }
 
