@@ -946,7 +946,7 @@ export default function SummaryPage({ userData }) {
           Özeti Paylaş
         </motion.h2>
 
-        <div className="flex flex-col lg:flex-row gap-8 sm:gap-12 items-center max-w-6xl w-full">
+        <div className="flex flex-col gap-8 sm:gap-12 items-center max-w-2xl w-full mx-auto">
           {/* Share Card */}
           <motion.div
             id="share-card"
@@ -1024,7 +1024,7 @@ export default function SummaryPage({ userData }) {
 
           {/* Action Buttons */}
           <motion.div
-            className="flex flex-col gap-3 sm:gap-4 w-full max-w-sm"
+            className="flex flex-col gap-3 sm:gap-4 w-full max-w-xs"
             variants={containerVariants}
           >
             <motion.button
