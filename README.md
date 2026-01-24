@@ -1,5 +1,2 @@
 # KAH Özetin
-- KAH'taki özetini görmeni sağlayan bir proje!
-
-### TODO
-- performans iyileştirilebilir
+- KAH'taki genel özetini görmeni sağlayan bir proje!
