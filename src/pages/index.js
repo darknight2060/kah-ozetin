@@ -194,10 +194,10 @@ export default function Home() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
           {/* Logo */}
           <motion.div
-            className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent"
+            className="text-lg md:text-2xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent"
             whileHover={{ scale: 1.05 }}
           >
             ✨ KAH Özetin
@@ -206,7 +206,7 @@ export default function Home() {
           {/* Navigation */}
           <Link href="/leaderboard">
             <motion.button
-              className="px-6 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition"
+              className="px-3 md:px-6 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-semibold text-sm md:text-base hover:shadow-lg hover:shadow-purple-500/50 transition"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -220,18 +220,18 @@ export default function Home() {
       <main className="relative z-10 min-h-screen flex flex-col">
         {/* Hero Section */}
         <motion.section
-          className="flex-1 flex flex-col items-center justify-center pt-20 pb-12 px-4"
+          className="flex-1 flex flex-col items-center justify-center pt-16 md:pt-20 pb-8 md:pb-12 px-4"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
         >
           {/* Main Title */}
           <motion.div
-            className="text-center mb-8"
+            className="text-center mb-6 md:mb-8"
             variants={itemVariants}
           >
             <motion.h1
-              className="text-6xl md:text-7xl font-black mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent"
+              className="text-3xl sm:text-5xl md:text-7xl font-black mb-2 md:mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
@@ -239,7 +239,7 @@ export default function Home() {
               Discord Yolculuğunu
             </motion.h1>
             <motion.h2
-              className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent"
+              className="text-2xl sm:text-4xl md:text-6xl font-black mb-3 md:mb-6 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.1 }}
@@ -247,7 +247,7 @@ export default function Home() {
               ✨ Keşfet ✨
             </motion.h2>
             <motion.p
-              className="text-xl text-gray-300 max-w-2xl"
+              className="text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl px-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.8 }}
@@ -258,14 +258,14 @@ export default function Home() {
 
           {/* Search Section */}
           <motion.div
-            className="w-full max-w-2xl mx-auto"
+            className="w-full max-w-2xl mx-auto px-2"
             variants={itemVariants}
           >
             {!selectedUser ? (
               <>
                 {/* Search Container */}
                 <motion.div
-                  className="relative backdrop-blur-xl bg-gray-900/40 rounded-2xl p-8 border border-gray-700/50 shadow-2xl hover:border-gray-600/50 transition"
+                  className="relative backdrop-blur-xl bg-gray-900/40 rounded-2xl p-4 md:p-8 border border-gray-700/50 shadow-2xl hover:border-gray-600/50 transition"
                   whileHover={{ borderColor: "rgba(147, 51, 234, 0.3)" }}
                 >
                   {/* Input Wrapper */}
@@ -278,11 +278,11 @@ export default function Home() {
                       onKeyPress={handleKeyPress}
                       onFocus={() => setIsFocused(true)}
                       onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-                      className="w-full px-6 py-4 rounded-xl bg-gray-800/50 text-white placeholder-gray-400 border-2 border-gray-700 focus:border-purple-500 focus:outline-none transition text-lg"
+                      className="w-full px-4 md:px-6 py-3 md:py-4 rounded-xl bg-gray-800/50 text-white placeholder-gray-400 text-sm md:text-base border-2 border-gray-700 focus:border-purple-500 focus:outline-none transition"
                       whileFocus={{ scale: 1.02 }}
                     />
                     <motion.div
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2"
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-lg md:text-xl"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.5 }}
@@ -294,7 +294,7 @@ export default function Home() {
                   {/* Suggestions Dropdown */}
                   {isFocused && suggestions.length > 0 && (
                     <motion.div
-                      className="absolute top-full left-8 right-8 mt-2 bg-gray-800/90 backdrop-blur-xl border border-gray-700/50 rounded-xl shadow-2xl z-50 max-h-96 overflow-y-auto"
+                      className="absolute top-full left-4 right-4 md:left-8 md:right-8 mt-2 bg-gray-800/90 backdrop-blur-xl border border-gray-700/50 rounded-xl shadow-2xl z-50 max-h-72 sm:max-h-96 overflow-y-auto"
                       initial={{ opacity: 0, y: -10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       transition={{ duration: 0.2 }}
@@ -302,7 +302,7 @@ export default function Home() {
                       {suggestions.map((user, index) => (
                         <motion.div
                           key={user.id}
-                          className="px-6 py-3 border-b border-gray-700/30 last:border-b-0 hover:bg-purple-600/20 cursor-pointer flex items-center gap-4 transition group"
+                          className="px-4 md:px-6 py-2 md:py-3 border-b border-gray-700/30 last:border-b-0 hover:bg-purple-600/20 cursor-pointer flex items-center gap-3 md:gap-4 transition group"
                           onClick={() => handleSelectUser(user)}
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
@@ -312,18 +312,18 @@ export default function Home() {
                           <img
                             src={user.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}
                             alt={user.displayName}
-                            className="w-10 h-10 rounded-full border border-purple-500/50"
+                            className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-purple-500/50 flex-shrink-0"
                             onError={(e) => {
                               e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
                             }}
                           />
-                          <div className="flex-1">
-                            <div className="font-semibold text-white group-hover:text-purple-300 transition">
+                          <div className="flex-1 min-w-0">
+                            <div className="font-semibold text-white group-hover:text-purple-300 transition text-sm md:text-base truncate">
                               {user.displayName}
                             </div>
-                            <div className="text-sm text-gray-400">@{user.username}</div>
+                            <div className="text-xs md:text-sm text-gray-400 truncate">@{user.username}</div>
                           </div>
-                          <div className="text-gray-500">→</div>
+                          <div className="text-gray-500 flex-shrink-0">→</div>
                         </motion.div>
                       ))}
                     </motion.div>
@@ -332,11 +332,11 @@ export default function Home() {
                   {/* Empty State */}
                   {isFocused && searchQuery.trim() && suggestions.length === 0 && (
                     <motion.div
-                      className="absolute top-full left-8 right-8 mt-2 bg-gray-800/90 backdrop-blur-xl border border-gray-700/50 rounded-xl shadow-2xl z-50 p-6 text-center"
+                      className="absolute top-full left-4 right-4 md:left-8 md:right-8 mt-2 bg-gray-800/90 backdrop-blur-xl border border-gray-700/50 rounded-xl shadow-2xl z-50 p-4 md:p-6 text-center"
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                     >
-                      <p className="text-gray-400">Kullanıcı bulunamadı</p>
+                      <p className="text-gray-400 text-sm md:text-base">Kullanıcı bulunamadı</p>
                     </motion.div>
                   )}
                 </motion.div>
@@ -346,7 +346,7 @@ export default function Home() {
             {/* Selected User Card */}
             {selectedUser && (
               <motion.div
-                className="mt-6 backdrop-blur-xl bg-gradient-to-r from-purple-600/20 to-cyan-600/20 rounded-xl p-4 border border-purple-500/50 flex items-center gap-4"
+                className="mt-4 md:mt-6 backdrop-blur-xl bg-gradient-to-r from-purple-600/20 to-cyan-600/20 rounded-xl p-3 md:p-4 border border-purple-500/50 flex items-center gap-3 md:gap-4"
                 initial={{ opacity: 0, y: -10, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.3 }}
@@ -354,18 +354,18 @@ export default function Home() {
                 <img
                   src={selectedUser.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}
                   alt={selectedUser.displayName}
-                  className="w-12 h-12 rounded-full border border-purple-500/50"
+                  className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-purple-500/50 flex-shrink-0"
                   onError={(e) => {
                     e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
                   }}
                 />
-                <div className="flex-1">
-                  <div className="font-semibold text-white">{selectedUser.displayName}</div>
-                  <div className="text-sm text-gray-400">@{selectedUser.username}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-white text-sm md:text-base truncate">{selectedUser.displayName}</div>
+                  <div className="text-xs md:text-sm text-gray-400 truncate">@{selectedUser.username}</div>
                 </div>
                 <motion.button
                   onClick={() => setSelectedUser(null)}
-                  className="text-gray-400 hover:text-white transition"
+                  className="text-gray-400 hover:text-white transition flex-shrink-0"
                   whileHover={{ scale: 1.2 }}
                   whileTap={{ scale: 0.9 }}
                 >
@@ -378,7 +378,7 @@ export default function Home() {
             <motion.button
               onClick={handleSubmit}
               disabled={!selectedUser || isNavigating}
-              className={`w-full mt-6 px-8 py-4 rounded-xl font-bold text-lg transition transform ${
+              className={`w-full mt-4 md:mt-6 px-6 md:px-8 py-3 md:py-4 rounded-xl font-bold text-sm md:text-lg transition transform ${
                 selectedUser && !isNavigating
                   ? 'bg-gradient-to-r from-purple-600 to-cyan-600 text-white hover:shadow-2xl hover:shadow-purple-500/50'
                   : 'bg-gray-700 text-gray-500 cursor-not-allowed'
@@ -404,39 +404,39 @@ export default function Home() {
 
           {/* Info Cards */}
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl mt-16"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-4xl mt-10 md:mt-16 px-2"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8 }}
           >
             {/* Card 1 */}
             <motion.div
-              className="backdrop-blur-xl bg-gradient-to-br from-purple-600/20 to-purple-600/5 rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/50 transition"
+              className="backdrop-blur-xl bg-gradient-to-br from-purple-600/20 to-purple-600/5 rounded-2xl p-4 md:p-6 border border-purple-500/20 hover:border-purple-500/50 transition"
               whileHover={{ y: -10, borderColor: "rgba(168, 85, 247, 0.5)" }}
             >
-              <div className="text-4xl mb-3">💬</div>
-              <h3 className="text-xl font-bold text-white mb-2">Mesajlar</h3>
-              <p className="text-gray-400">Gönderdiğin toplam mesajları ve istatistiklerini görüntüle</p>
+              <div className="text-3xl md:text-4xl mb-2 md:mb-3">💬</div>
+              <h3 className="text-lg md:text-xl font-bold text-white mb-1 md:mb-2">Mesajlar</h3>
+              <p className="text-xs md:text-sm text-gray-400">Gönderdiğin toplam mesajları ve istatistiklerini görüntüle</p>
             </motion.div>
 
             {/* Card 2 */}
             <motion.div
-              className="backdrop-blur-xl bg-gradient-to-br from-cyan-600/20 to-cyan-600/5 rounded-2xl p-6 border border-cyan-500/20 hover:border-cyan-500/50 transition"
+              className="backdrop-blur-xl bg-gradient-to-br from-cyan-600/20 to-cyan-600/5 rounded-2xl p-4 md:p-6 border border-cyan-500/20 hover:border-cyan-500/50 transition"
               whileHover={{ y: -10, borderColor: "rgba(34, 211, 238, 0.5)" }}
             >
-              <div className="text-4xl mb-3">⏰</div>
-              <h3 className="text-xl font-bold text-white mb-2">Aktivite</h3>
-              <p className="text-gray-400">En aktif saatlerini ve günlerini analiz et</p>
+              <div className="text-3xl md:text-4xl mb-2 md:mb-3">⏰</div>
+              <h3 className="text-lg md:text-xl font-bold text-white mb-1 md:mb-2">Aktivite</h3>
+              <p className="text-xs md:text-sm text-gray-400">En aktif saatlerini ve günlerini analiz et</p>
             </motion.div>
 
             {/* Card 3 */}
             <motion.div
-              className="backdrop-blur-xl bg-gradient-to-br from-pink-600/20 to-pink-600/5 rounded-2xl p-6 border border-pink-500/20 hover:border-pink-500/50 transition"
+              className="backdrop-blur-xl bg-gradient-to-br from-pink-600/20 to-pink-600/5 rounded-2xl p-4 md:p-6 border border-pink-500/20 hover:border-pink-500/50 transition"
               whileHover={{ y: -10, borderColor: "rgba(236, 72, 153, 0.5)" }}
             >
-              <div className="text-4xl mb-3">🎯</div>
-              <h3 className="text-xl font-bold text-white mb-2">İstatistikler</h3>
-              <p className="text-gray-400">Detaylı veriler ve çıkarımlarla sunucudaki rolünü keşfet</p>
+              <div className="text-3xl md:text-4xl mb-2 md:mb-3">🎯</div>
+              <h3 className="text-lg md:text-xl font-bold text-white mb-1 md:mb-2">İstatistikler</h3>
+              <p className="text-xs md:text-sm text-gray-400">Detaylı veriler ve çıkarımlarla sunucudaki rolünü keşfet</p>
             </motion.div>
           </motion.div>
         </motion.section>

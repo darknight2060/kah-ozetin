@@ -152,14 +152,14 @@ export default function LeaderboardPage({ initialData }) {
 
     return (
       <motion.div
-        className={`flex items-center gap-4 p-4 rounded-2xl backdrop-blur-sm transition-all ${
+        className={`flex items-center gap-2 sm:gap-4 p-3 sm:p-4 rounded-2xl backdrop-blur-sm transition-all ${
           isTopThree
             ? 'bg-gradient-to-r from-yellow-600/20 to-orange-600/20 border border-yellow-500/30 hover:border-yellow-500/50'
             : 'bg-gradient-to-r from-blue-600/10 to-purple-600/10 border border-blue-500/20 hover:border-blue-500/40'
         }`}
         variants={itemVariants}
       >
-        <span className={`text-3xl font-black min-w-16 text-center ${
+        <span className={`text-xl sm:text-3xl font-black min-w-10 sm:min-w-16 text-center ${
           isTopThree ? 'text-yellow-400' : 'text-gray-400'
         }`}>
           {isTopThree ? medals[item.rank - 1] : `#${item.rank}`}
@@ -170,7 +170,7 @@ export default function LeaderboardPage({ initialData }) {
           alt={item.user?.username || 'User avatar'}
           width={40}
           height={40}
-          className="rounded-full object-cover flex-shrink-0 border border-blue-400/30"
+          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0 border border-blue-400/30"
           unoptimized={true}
           loading="lazy"
           onError={(e) => {
@@ -179,14 +179,14 @@ export default function LeaderboardPage({ initialData }) {
         />
 
         <Link href={`/summary/${item.user_id}`}>
-          <div className="flex-1 hover:text-blue-300 transition-colors cursor-pointer">
-            <p className="font-semibold text-white group-hover:text-blue-300">{item.user?.username || item.user_id}</p>
-            <p className="text-xs text-gray-500">{item.user?.id}</p>
+          <div className="flex-1 hover:text-blue-300 transition-colors cursor-pointer min-w-0">
+            <p className="font-semibold text-white group-hover:text-blue-300 text-xs sm:text-base truncate">{item.user?.username || item.user_id}</p>
+            <p className="text-xs text-gray-500 truncate">{item.user?.id}</p>
           </div>
         </Link>
 
-        <div className="text-right">
-          <p className={`font-bold text-lg ${
+        <div className="text-right flex-shrink-0">
+          <p className={`font-bold text-sm sm:text-lg ${
             isTopThree ? 'text-yellow-300' : 'text-blue-300'
           }`}>
             {formatNumber(item.value)}
@@ -247,17 +247,17 @@ export default function LeaderboardPage({ initialData }) {
         animate={{ y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 relative flex items-center justify-center">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4 relative flex items-center justify-center">
           <Link href="/">
             <motion.div
-              className="absolute left-4 sm:left-6 lg:left-8 top-1/2 -translate-y-1/2 flex items-center gap-2 text-gray-400 hover:text-white transition-colors cursor-pointer"
+              className="absolute left-3 sm:left-6 lg:left-8 top-1/2 -translate-y-1/2 flex items-center gap-2 text-gray-400 hover:text-white transition-colors cursor-pointer"
               whileHover={{ x: -5 }}
             >
-              <span className="text-2xl">←</span>
-              <span className="hidden sm:inline">Ana Sayfa</span>
+              <span className="text-xl sm:text-2xl">←</span>
+              <span className="hidden sm:inline text-sm sm:text-base">Ana Sayfa</span>
             </motion.div>
           </Link>
-          <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <h2 className="text-base sm:text-lg md:text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Sıralama
           </h2>
         </div>
@@ -265,15 +265,15 @@ export default function LeaderboardPage({ initialData }) {
 
       {/* Content */}
       <motion.div
-        className="pt-32 pb-24"
+        className="pt-24 sm:pt-32 pb-16 sm:pb-24"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
       >
         {/* Tabs */}
-        <div className="max-w-6xl mx-auto px-4 mb-12">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 mb-8 sm:mb-12">
           <motion.div 
-            className="flex flex-wrap gap-3 justify-center"
+            className="flex flex-wrap gap-2 sm:gap-3 justify-center"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -282,7 +282,7 @@ export default function LeaderboardPage({ initialData }) {
               <motion.button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+                className={`px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold text-xs sm:text-sm md:text-base transition-all ${
                   activeTab === tab.id
                     ? `bg-gradient-to-r ${tab.gradient} text-white shadow-lg`
                     : 'glassmorphism text-gray-300 hover:text-white'
@@ -299,7 +299,7 @@ export default function LeaderboardPage({ initialData }) {
 
         {/* Main Content */}
         <motion.div
-          className="max-w-3xl mx-auto px-4"
+          className="max-w-3xl mx-auto px-3 sm:px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
@@ -307,7 +307,7 @@ export default function LeaderboardPage({ initialData }) {
 
         {/* Rankings List */}
         <motion.div
-          className="space-y-3"
+          className="space-y-2 sm:space-y-3"
           initial={false}
           animate="visible"
           variants={containerVariants}

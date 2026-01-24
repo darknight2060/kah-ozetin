@@ -1,9 +1,6 @@
+# KAH Özetin
+- KAH'taki özetini görmeni sağlayan bir proje!
 
-
-
-
-
-
-
-- responsive
-- performans
+### TODO
+- özeti paylaş kısmı pc de kötü duruyor
+- performans iyileştirilebilir

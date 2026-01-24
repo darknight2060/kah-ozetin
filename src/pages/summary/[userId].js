@@ -262,7 +262,7 @@ export default function SummaryPage({ userData }) {
           50% { transform: translateY(-20px); }
         }
         .aurora-bg {
-          background: linear-gradient(-45deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1), rgba(59, 130, 246, 0.1));
+          background: linear-gradient(135deg, rgba(30, 41, 59, 0.4), rgba(30, 27, 75, 0.2), rgba(59, 130, 246, 0.05));
           background-size: 400% 400%;
           animation: aurora 15s ease infinite;
         }
@@ -315,16 +315,16 @@ export default function SummaryPage({ userData }) {
         animate={{ y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 relative flex items-center justify-center">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4 relative flex items-center justify-center">
           <motion.a
             href="/"
-            className="absolute left-4 sm:left-6 lg:left-8 top-1/2 -translate-y-1/2 flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+            className="absolute left-3 sm:left-6 lg:left-8 top-1/2 -translate-y-1/2 flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
             whileHover={{ x: -5 }}
           >
-            <span className="text-2xl">←</span>
-            <span className="hidden sm:inline">Ana Sayfa</span>
+            <span className="text-xl sm:text-2xl">←</span>
+            <span className="hidden sm:inline text-xs sm:text-base">Ana Sayfa</span>
           </motion.a>
-          <h2 className="text-lg sm:text-xl font-bold text-center">
+          <h2 className="text-sm sm:text-lg md:text-xl font-bold text-center px-2 truncate">
             <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               {user.displayName || user.username}
             </span>
@@ -334,7 +334,7 @@ export default function SummaryPage({ userData }) {
 
       {/* Hero Section */}
       <motion.div
-        className="min-h-screen pt-32 pb-20 flex flex-col items-center justify-center relative overflow-hidden aurora-bg"
+        className="min-h-screen pt-24 sm:pt-32 pb-12 sm:pb-20 flex flex-col items-center justify-center relative overflow-hidden aurora-bg px-4"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -342,7 +342,7 @@ export default function SummaryPage({ userData }) {
       >
         {/* Animated background blobs */}
         <motion.div
-          className="absolute top-20 left-10 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-15 z-0"
+          className="absolute top-20 left-10 w-40 sm:w-60 md:w-80 h-40 sm:h-60 md:h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-15 z-0"
           animate={{
             y: [0, 50, 0],
             x: [0, 30, 0],
@@ -350,7 +350,7 @@ export default function SummaryPage({ userData }) {
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute bottom-0 right-10 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-15 z-0"
+          className="absolute bottom-0 right-10 w-40 sm:w-60 md:w-80 h-40 sm:h-60 md:h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-15 z-0"
           animate={{
             y: [0, -50, 0],
             x: [0, -30, 0],
@@ -358,7 +358,7 @@ export default function SummaryPage({ userData }) {
           transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        <div className="relative z-20 space-y-8">
+        <div className="relative z-20 space-y-6 sm:space-y-8 w-full flex flex-col items-center">
           {/* Avatar with gradient border */}
           <motion.div
             className="flex justify-center"
@@ -375,7 +375,7 @@ export default function SummaryPage({ userData }) {
                 alt="User Avatar"
                 width={200}
                 height={200}
-                className="w-48 h-48 md:w-56 md:h-56"
+                className="w-32 sm:w-40 md:w-48 lg:w-56 h-32 sm:h-40 md:h-48 lg:h-56"
                 priority
                 unoptimized={true}
                 onError={(e) => {
@@ -387,46 +387,27 @@ export default function SummaryPage({ userData }) {
 
           {/* Username and display name */}
           <motion.div
-            className="text-center space-y-4"
+            className="text-center space-y-2 sm:space-y-4 w-full"
             variants={itemVariants}
           >
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent break-words">
               {user.displayName || user.username}
             </h1>
             {user.displayName && user.displayName !== user.username && (
-              <p className="text-lg sm:text-xl text-gray-500">
+              <p className="text-sm sm:text-lg md:text-xl text-gray-500">
                 @{user.username}
               </p>
             )}
-            <p className="text-xl sm:text-2xl md:text-3xl text-gray-400 font-light">
+            <p className="text-lg sm:text-2xl md:text-3xl text-gray-400 font-light">
               Sunucudaki Hikâyen
             </p>
-          </motion.div>
-
-          {/* Quick stats preview */}
-          <motion.div
-            className="grid grid-cols-3 gap-4 mt-8"
-            variants={containerVariants}
-          >
-            <motion.div className="text-center" variants={itemVariants}>
-              <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-400">{formatNumber(stats.total)}</p>
-              <p className="text-xs sm:text-sm text-gray-400 mt-2">Mesaj</p>
-            </motion.div>
-            <motion.div className="text-center" variants={itemVariants}>
-              <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-purple-400">{stats.active_days}</p>
-              <p className="text-xs sm:text-sm text-gray-400 mt-2">Gün</p>
-            </motion.div>
-            <motion.div className="text-center" variants={itemVariants}>
-              <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-pink-400">{avgMessageLength}</p>
-              <p className="text-xs sm:text-sm text-gray-400 mt-2">Karakter</p>
-            </motion.div>
           </motion.div>
         </div>
       </motion.div>
 
       {/* Key Metrics Grid */}
       <motion.section
-        className="relative py-20 px-4 sm:px-6 lg:px-8"
+        className="relative py-12 sm:py-20 px-4 sm:px-6 lg:px-8"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -434,7 +415,7 @@ export default function SummaryPage({ userData }) {
       >
         <div className="max-w-6xl mx-auto">
           <motion.h2
-            className="text-4xl sm:text-5xl font-black text-center mb-16 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent"
+            className="text-2xl sm:text-4xl md:text-5xl font-black text-center mb-8 sm:mb-16 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent"
             variants={itemVariants}
           >
             Temel Metriklerin
@@ -442,62 +423,62 @@ export default function SummaryPage({ userData }) {
 
           {/* User Role Card */}
           <motion.div
-            className="mb-8 stat-card p-8 rounded-2xl backdrop-blur-sm border-2 border-yellow-400 bg-gradient-to-r from-yellow-900 from-20% via-blue-900 via-50% to-purple-900 to-80%"
+            className="mb-6 sm:mb-8 stat-card p-6 sm:p-8 rounded-2xl backdrop-blur-sm border-2 border-yellow-400 bg-gradient-to-r from-yellow-900 from-20% via-blue-900 via-50% to-purple-900 to-80%"
             variants={itemVariants}
             whileHover={{ y: -5, boxShadow: '0 0 40px rgba(250, 204, 21, 0.4)' }}
           >
             <div className="text-center">
-              <p className="text-gray-300 text-lg mb-2">👑 Sunucudaki Rolün</p>
-              <p className="text-5xl sm:text-6xl font-black bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent mb-4">
+              <p className="text-gray-300 text-base sm:text-lg mb-2">👑 Sunucudaki Rolün</p>
+              <p className="text-3xl sm:text-5xl md:text-6xl font-black bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent mb-3 sm:mb-4 break-words">
                 {userRole.title}
               </p>
-              <p className="text-gray-200 text-lg italic">
+              <p className="text-gray-200 text-sm sm:text-lg italic">
                 {userRole.description}
               </p>
             </div>
           </motion.div>
 
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-4 gap-6"
+            className="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6"
             variants={containerVariants}
           >
             {/* Total Messages */}
             <motion.div
-              className="md:col-span-2 stat-card p-8 rounded-2xl backdrop-blur-sm"
+              className="md:col-span-2 stat-card p-6 sm:p-8 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-lg mb-4">📊 Toplam Mesaj</p>
-              <p className="text-6xl sm:text-7xl font-black bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">
+              <p className="text-gray-400 text-base sm:text-lg mb-3 sm:mb-4">📊 Toplam Mesaj</p>
+              <p className="text-4xl sm:text-6xl md:text-7xl font-black bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">
                 {formatNumber(stats.total)}
               </p>
-              <p className="text-gray-500 text-sm mt-4">
+              <p className="text-gray-500 text-xs sm:text-sm mt-3 sm:mt-4">
                 {formatNumber(stats.active_days)} gün içinde gönderdin
               </p>
             </motion.div>
 
             {/* Most Active Hour */}
             <motion.div
-              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-6 sm:p-8 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-sm mb-4">🕐 En Aktif Saat</p>
-              <p className="text-5xl font-black text-orange-400">{parseInt(mostActiveHour)}:00</p>
-              <p className="text-gray-500 text-xs mt-4">
+              <p className="text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4">🕐 En Aktif Saat</p>
+              <p className="text-3xl sm:text-5xl font-black text-orange-400">{parseInt(mostActiveHour)}:00</p>
+              <p className="text-gray-500 text-xs mt-3 sm:mt-4 line-clamp-2">
                 {getMostActiveHourDescription(mostActiveHour)}
               </p>
             </motion.div>
 
             {/* Most Active Day */}
             <motion.div
-              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-6 sm:p-8 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-sm mb-4">📅 En Aktif Gün</p>
-              <p className="text-5xl font-black text-purple-400">{mostActiveDay}</p>
-              <p className="text-gray-500 text-xs mt-4">Haftanın Günü</p>
+              <p className="text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4">📅 En Aktif Gün</p>
+              <p className="text-3xl sm:text-5xl font-black text-purple-400 break-words">{mostActiveDay}</p>
+              <p className="text-gray-500 text-xs mt-3 sm:mt-4">Haftanın Günü</p>
             </motion.div>
           </motion.div>
         </div>
@@ -505,7 +486,7 @@ export default function SummaryPage({ userData }) {
 
       {/* Stats Cards Section */}
       <motion.section
-        className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-blue-900 via-opacity-5 to-transparent"
+        className="relative py-12 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-slate-900 via-opacity-20 to-transparent"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -513,7 +494,7 @@ export default function SummaryPage({ userData }) {
       >
         <div className="max-w-6xl mx-auto">
           <motion.h2
-            className="text-4xl sm:text-5xl font-black text-center mb-16 bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent"
+            className="text-2xl sm:text-4xl md:text-5xl font-black text-center mb-8 sm:mb-16 bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent"
             variants={itemVariants}
           >
             Mesaj İstatistikleri
@@ -521,31 +502,31 @@ export default function SummaryPage({ userData }) {
 
           {/* Row 1: Message stats */}
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6"
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6"
             variants={containerVariants}
           >
             {/* Message Length */}
             <motion.div
-              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-6 sm:p-8 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-lg mb-4">📝 Ortalama Mesaj Uzunluğu</p>
-              <p className="text-6xl font-black text-blue-400">{avgMessageLength}</p>
-              <p className="text-gray-500 text-sm mt-4">
+              <p className="text-gray-400 text-base sm:text-lg mb-3 sm:mb-4">📝 Ortalama Mesaj Uzunluğu</p>
+              <p className="text-4xl sm:text-6xl font-black text-blue-400">{avgMessageLength}</p>
+              <p className="text-gray-500 text-xs sm:text-sm mt-3 sm:mt-4">
                 Min: {stats.min_len} | Max: {stats.max_len}
               </p>
             </motion.div>
 
             {/* Question Ratio */}
             <motion.div
-              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-6 sm:p-8 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-lg mb-4">❓ Soru Oranı</p>
-              <p className="text-6xl font-black text-purple-400">%{questionRatio}</p>
-              <p className="text-gray-500 text-sm mt-4">
+              <p className="text-gray-400 text-base sm:text-lg mb-3 sm:mb-4">❓ Soru Oranı</p>
+              <p className="text-4xl sm:text-6xl font-black text-purple-400">%{questionRatio}</p>
+              <p className="text-gray-500 text-xs sm:text-sm mt-3 sm:mt-4">
                 {stats.question} soru / {stats.total} mesaj
               </p>
             </motion.div>
@@ -553,16 +534,16 @@ export default function SummaryPage({ userData }) {
 
           {/* Row 2: Top Words */}
           <motion.div
-            className="stat-card p-8 rounded-2xl backdrop-blur-sm mb-6"
+            className="stat-card p-6 sm:p-8 rounded-2xl backdrop-blur-sm mb-4 sm:mb-6"
             variants={itemVariants}
             whileHover={{ y: -5 }}
           >
-            <p className="text-gray-400 text-lg mb-6">🔤 En Çok Kullanılan Kelimeler</p>
-            <div className="flex flex-wrap gap-3">
+            <p className="text-gray-400 text-base sm:text-lg mb-4 sm:mb-6">🔤 En Çok Kullanılan Kelimeler</p>
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               {topWords.map((item, idx) => (
                 <motion.div
                   key={idx}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full font-semibold text-sm sm:text-base hover:from-blue-500 hover:to-blue-400 transition-all"
+                  className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full font-semibold text-xs sm:text-sm hover:from-blue-500 hover:to-blue-400 transition-all"
                   whileHover={{ scale: 1.1, rotate: 5 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -575,29 +556,29 @@ export default function SummaryPage({ userData }) {
 
           {/* Row 3: Message Timeline */}
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"
             variants={containerVariants}
           >
             {/* First Message */}
             <motion.div
-              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-6 sm:p-8 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-lg mb-4">📅 İlk Mesaj</p>
-              <p className="text-3xl font-black text-cyan-400 mb-2">{formatDate(stats.first)}</p>
-              <p className="text-gray-500 text-sm">Sunucudaki başlangıcın</p>
+              <p className="text-gray-400 text-base sm:text-lg mb-3 sm:mb-4">📅 İlk Mesaj</p>
+              <p className="text-2xl sm:text-3xl font-black text-cyan-400 mb-2">{formatDate(stats.first)}</p>
+              <p className="text-gray-500 text-xs sm:text-sm">Sunucudaki başlangıcın</p>
             </motion.div>
 
             {/* Last Message */}
             <motion.div
-              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-6 sm:p-8 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-lg mb-4">⏱️ Son Mesaj</p>
-              <p className="text-3xl font-black text-teal-400 mb-2">{formatDate(stats.last)}</p>
-              <p className="text-gray-500 text-sm">Son aktivite zamanı</p>
+              <p className="text-gray-400 text-base sm:text-lg mb-3 sm:mb-4">⏱️ Son Mesaj</p>
+              <p className="text-2xl sm:text-3xl font-black text-teal-400 mb-2">{formatDate(stats.last)}</p>
+              <p className="text-gray-500 text-xs sm:text-sm">Son aktivite zamanı</p>
             </motion.div>
           </motion.div>
         </div>
@@ -605,7 +586,7 @@ export default function SummaryPage({ userData }) {
 
       {/* Advanced Analytics Section */}
       <motion.section
-        className="relative py-20 px-4 sm:px-6 lg:px-8"
+        className="relative py-12 sm:py-20 px-4 sm:px-6 lg:px-8"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -613,7 +594,7 @@ export default function SummaryPage({ userData }) {
       >
         <div className="max-w-6xl mx-auto">
           <motion.h2
-            className="text-4xl sm:text-5xl font-black text-center mb-16 bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent"
+            className="text-2xl sm:text-4xl md:text-5xl font-black text-center mb-8 sm:mb-16 bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent"
             variants={itemVariants}
           >
             İleri Analitiği
@@ -621,82 +602,82 @@ export default function SummaryPage({ userData }) {
 
           {/* Row 1: Main metrics - 4 columns */}
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
+            className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-4 sm:mb-6"
             variants={containerVariants}
           >
             {/* Daily Average */}
             <motion.div
-              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-4 sm:p-6 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-xs sm:text-sm mb-3">📊 Günlük Ortalama</p>
-              <p className="text-4xl sm:text-5xl font-black text-cyan-400">{avgMessagesPerDay}</p>
-              <p className="text-gray-500 text-xs mt-3">mesaj/gün</p>
+              <p className="text-gray-400 text-xs mb-2 sm:mb-3">📊 Günlük Ort.</p>
+              <p className="text-2xl sm:text-4xl font-black text-cyan-400">{avgMessagesPerDay}</p>
+              <p className="text-gray-500 text-xs mt-2 sm:mt-3">mesaj/gün</p>
             </motion.div>
 
             {/* Most Active Month */}
             <motion.div
-              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-4 sm:p-6 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-xs sm:text-sm mb-3">📅 En Aktif Ay</p>
-              <p className="text-4xl sm:text-5xl font-black text-orange-400">{formatNumber(mostActiveMonth.count)}</p>
-              <p className="text-gray-500 text-xs mt-3">{getMonthName(mostActiveMonth.month)}</p>
+              <p className="text-gray-400 text-xs mb-2 sm:mb-3">📅 En Aktif Ay</p>
+              <p className="text-2xl sm:text-4xl font-black text-orange-400 break-words">{formatNumber(mostActiveMonth.count)}</p>
+              <p className="text-gray-500 text-xs mt-2 sm:mt-3 truncate">{getMonthName(mostActiveMonth.month)}</p>
             </motion.div>
 
             {/* Peak Activity */}
             <motion.div
-              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-4 sm:p-6 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-xs sm:text-sm mb-3">🔥 Peak Saati</p>
-              <p className="text-4xl sm:text-5xl font-black text-rose-400">{peakActivityCombo.hour}:00</p>
-              <p className="text-gray-500 text-xs mt-3">{peakActivityCombo.day}</p>
+              <p className="text-gray-400 text-xs mb-2 sm:mb-3">🔥 Peak Saati</p>
+              <p className="text-2xl sm:text-4xl font-black text-rose-400">{peakActivityCombo.hour}:00</p>
+              <p className="text-gray-500 text-xs mt-2 sm:mt-3 truncate">{peakActivityCombo.day}</p>
             </motion.div>
 
             {/* Profile Type */}
             <motion.div
-              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-4 sm:p-6 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-xs sm:text-sm mb-3">🌙 Profil Tipi</p>
-              <p className="text-3xl font-black text-violet-400 mb-1">
+              <p className="text-gray-400 text-xs mb-2 sm:mb-3">🌙 Profil</p>
+              <p className="text-2xl font-black text-violet-400 mb-1">
                 {nightOwl ? '🌙' : '☀️'}
               </p>
               <p className="text-gray-500 text-xs">
-                {nightOwl ? 'Gece Baykuşu' : 'Gündüz Aktifi'}
+                {nightOwl ? 'Gece' : 'Gündüz'}
               </p>
             </motion.div>
           </motion.div>
 
           {/* Row 2: Content stats - 3 columns */}
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-3 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6"
             variants={containerVariants}
           >
             {/* Unique Words */}
             <motion.div
-              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-6 sm:p-6 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
               <p className="text-gray-400 text-xs sm:text-sm mb-3">📚 Benzersiz Kelimeler</p>
-              <p className="text-5xl font-black text-indigo-400">{formatNumber(totalUniqueWords)}</p>
+              <p className="text-3xl sm:text-5xl font-black text-indigo-400">{formatNumber(totalUniqueWords)}</p>
               <p className="text-gray-500 text-xs mt-3">farklı kelime</p>
             </motion.div>
 
             {/* Message Range */}
             <motion.div
-              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-6 sm:p-6 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
               <p className="text-gray-400 text-xs sm:text-sm mb-3">📏 Mesaj Aralığı</p>
-              <p className="text-4xl font-black text-lime-400">
+              <p className="text-3xl sm:text-4xl font-black text-lime-400">
                 {stats.min_len}-{stats.max_len}
               </p>
               <p className="text-gray-500 text-xs mt-3">karakter</p>
@@ -704,12 +685,12 @@ export default function SummaryPage({ userData }) {
 
             {/* Message Range */}
             <motion.div
-              className="stat-card p-6 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-6 sm:p-6 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
               <p className="text-gray-400 text-xs sm:text-sm mb-3">⏳ Sunucuda Geçen Süre</p>
-              <p className="text-4xl font-black text-lime-400">{yearsOnServer}</p>
+              <p className="text-3xl sm:text-4xl font-black text-lime-400">{yearsOnServer}</p>
               <p className="text-gray-500 text-xs mt-3">yıl ({daysSince} gün)</p>
             </motion.div>
           </motion.div>
@@ -718,7 +699,7 @@ export default function SummaryPage({ userData }) {
 
       {/* Rankings Section */}
       <motion.section
-        className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-purple-900 via-opacity-5 to-transparent"
+        className="relative py-12 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-slate-900 via-opacity-20 to-transparent"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -726,59 +707,59 @@ export default function SummaryPage({ userData }) {
       >
         <div className="max-w-6xl mx-auto">
           <motion.h2
-            className="text-4xl sm:text-5xl font-black text-center mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent"
+            className="text-2xl sm:text-4xl md:text-5xl font-black text-center mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent"
             variants={itemVariants}
           >
             Sunucudaki Sıralaman
           </motion.h2>
 
           <motion.div
-            className="text-center mb-12"
+            className="text-center mb-8 sm:mb-12"
             variants={itemVariants}
           >
-            <p className="text-6xl sm:text-7xl md:text-8xl font-black text-green-400 mb-2">
+            <p className="text-4xl sm:text-6xl md:text-7xl font-black text-green-400 mb-2">
               %{rankings.messageCountPercentile || '—'}
             </p>
-            <p className="text-gray-400">
+            <p className="text-sm sm:text-base text-gray-400">
               Aktif kullanıcılardan <span className="text-green-400 font-bold">daha aktif</span>'sin
             </p>
           </motion.div>
 
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6"
             variants={containerVariants}
           >
             {/* Message Count Rank */}
             <motion.div
-              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-6 sm:p-8 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-sm mb-4">💬 Mesaj Sıralaması</p>
-              <p className="text-5xl font-black text-blue-400 mb-2">#{rankings.messageCountRank || '—'}</p>
-              <p className="text-gray-500 text-sm">{formatNumber(stats.total)} mesaj gönderdin</p>
+              <p className="text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4">💬 Mesaj Sıralaması</p>
+              <p className="text-4xl sm:text-5xl font-black text-blue-400 mb-2">#{rankings.messageCountRank || '—'}</p>
+              <p className="text-gray-500 text-xs sm:text-sm">{formatNumber(stats.total)} mesaj gönderdin</p>
             </motion.div>
 
             {/* Active Days */}
             <motion.div
-              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-6 sm:p-8 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-sm mb-4">📅 Aktif Günler</p>
-              <p className="text-5xl font-black text-purple-400 mb-2">{formatNumber(stats.active_days)}</p>
-              <p className="text-gray-500 text-sm">{activityPercentage}% tutarlı aktif</p>
+              <p className="text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4">📅 Aktif Günler</p>
+              <p className="text-4xl sm:text-5xl font-black text-purple-400 mb-2">{formatNumber(stats.active_days)}</p>
+              <p className="text-gray-500 text-xs sm:text-sm">{activityPercentage}% tutarlı aktif</p>
             </motion.div>
 
             {/* Mentions */}
             <motion.div
-              className="stat-card p-8 rounded-2xl backdrop-blur-sm"
+              className="stat-card p-6 sm:p-8 rounded-2xl backdrop-blur-sm"
               variants={itemVariants}
               whileHover={{ y: -5 }}
             >
-              <p className="text-gray-400 text-sm mb-4">👤 Bahsedilme</p>
-              <p className="text-5xl font-black text-pink-400 mb-2">{social.mentioned_by || 0}</p>
-              <p className="text-gray-500 text-sm">kişi tarafından anıldı</p>
+              <p className="text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4">👤 Bahsedilme</p>
+              <p className="text-4xl sm:text-5xl font-black text-pink-400 mb-2">{social.mentioned_by || 0}</p>
+              <p className="text-gray-500 text-xs sm:text-sm">kişi tarafından anıldı</p>
             </motion.div>
           </motion.div>
         </div>
@@ -786,7 +767,7 @@ export default function SummaryPage({ userData }) {
 
       {/* Leaderboard Section */}
       <motion.section
-        className="relative py-20 px-4 sm:px-6 lg:px-8"
+        className="relative py-12 sm:py-20 px-4 sm:px-6 lg:px-8"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -794,7 +775,7 @@ export default function SummaryPage({ userData }) {
       >
         <div className="max-w-6xl mx-auto">
           <motion.h2
-            className="text-4xl sm:text-5xl font-black text-center mb-16 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
+            className="text-2xl sm:text-4xl md:text-5xl font-black text-center mb-8 sm:mb-16 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
             variants={itemVariants}
           >
             🏆 Sıralamalar
@@ -802,48 +783,48 @@ export default function SummaryPage({ userData }) {
 
           {userData.leaderboard && (
             <motion.div
-              className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+              className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6"
               variants={containerVariants}
             >
               {/* Message Count Leaderboard */}
               <motion.div
-                className="stat-card p-6 rounded-2xl backdrop-blur-sm"
+                className="stat-card p-4 sm:p-6 rounded-2xl backdrop-blur-sm"
                 variants={itemVariants}
                 whileHover={{ y: -5 }}
               >
-                <div className="mb-6">
-                  <p className="text-gray-400 text-sm mb-2">💬 Mesaj Sayısı</p>
-                  <p className="text-4xl font-black text-blue-400">#{userData.leaderboard.message_count.userRank}</p>
+                <div className="mb-4 sm:mb-6">
+                  <p className="text-gray-400 text-xs sm:text-sm mb-2">💬 Mesaj Sayısı</p>
+                  <p className="text-3xl sm:text-4xl font-black text-blue-400">#{userData.leaderboard.message_count.userRank}</p>
                   <p className="text-gray-500 text-xs mt-2">{formatNumber(userData.leaderboard.message_count.userValue)} mesaj</p>
                 </div>
 
-                <div className="space-y-2 max-h-80 overflow-y-auto custom-scrollbar">
+                <div className="space-y-2 max-h-72 sm:max-h-80 overflow-y-auto custom-scrollbar">
                   {userData.leaderboard.message_count.context.map((item) => (
                     <motion.div
                       key={item.user_id}
-                      className={`flex items-center gap-3 p-3 rounded-lg transition-all text-sm ${
+                      className={`flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg transition-all text-xs sm:text-sm ${
                         item.isUser
                           ? 'bg-blue-700 border border-blue-400'
                           : 'bg-gray-700 hover:bg-gray-600'
                       }`}
                       whileHover={{ x: 5 }}
                     >
-                      <span className="font-bold text-gray-300 w-5 text-right text-xs">#{item.rank}</span>
+                      <span className="font-bold text-gray-300 w-5 text-right text-xs flex-shrink-0">#{item.rank}</span>
                       <Image
                         src={item.user?.avatar_url?.replace('?size=512', '?size=32') || 'https://cdn.discordapp.com/embed/avatars/0.png'}
                         alt={item.user?.username || 'User avatar'}
                         width={28}
                         height={28}
-                        className="rounded-full flex-shrink-0"
+                        className="w-6 h-6 sm:w-7 sm:h-7 rounded-full flex-shrink-0"
                         unoptimized={true}
                         onError={(e) => {
                           e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
                         }}
                       />
-                      <div className="flex-1 truncate">
-                        <span className="text-gray-100 font-medium">{item.user?.displayName || item.user?.username || 'Unknown'}</span>
+                      <div className="flex-1 truncate min-w-0">
+                        <span className="text-gray-100 font-medium truncate block">{item.user?.displayName || item.user?.username || 'Unknown'}</span>
                         {item.user?.displayName && item.user?.displayName !== item.user?.username && (
-                          <span className="text-gray-500 text-xs ml-1">({item.user?.username})</span>
+                          <span className="text-gray-500 text-xs truncate block">({item.user?.username})</span>
                         )}
                       </div>
                       <span className="font-bold text-gray-300 flex-shrink-0 text-xs">{formatNumber(item.value)}</span>
@@ -854,43 +835,43 @@ export default function SummaryPage({ userData }) {
 
               {/* Active Days Leaderboard */}
               <motion.div
-                className="stat-card p-6 rounded-2xl backdrop-blur-sm"
+                className="stat-card p-4 sm:p-6 rounded-2xl backdrop-blur-sm"
                 variants={itemVariants}
                 whileHover={{ y: -5 }}
               >
-                <div className="mb-6">
-                  <p className="text-gray-400 text-sm mb-2">📅 Aktif Günler</p>
-                  <p className="text-4xl font-black text-purple-400">#{userData.leaderboard.active_days.userRank}</p>
+                <div className="mb-4 sm:mb-6">
+                  <p className="text-gray-400 text-xs sm:text-sm mb-2">📅 Aktif Günler</p>
+                  <p className="text-3xl sm:text-4xl font-black text-purple-400">#{userData.leaderboard.active_days.userRank}</p>
                   <p className="text-gray-500 text-xs mt-2">{userData.leaderboard.active_days.userValue} gün</p>
                 </div>
 
-                <div className="space-y-2 max-h-80 overflow-y-auto custom-scrollbar">
+                <div className="space-y-2 max-h-72 sm:max-h-80 overflow-y-auto custom-scrollbar">
                   {userData.leaderboard.active_days.context.map((item) => (
                     <motion.div
                       key={item.user_id}
-                      className={`flex items-center gap-3 p-3 rounded-lg transition-all text-sm ${
+                      className={`flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg transition-all text-xs sm:text-sm ${
                         item.isUser
                           ? 'bg-purple-700 border border-purple-400'
                           : 'bg-gray-700 hover:bg-gray-600'
                       }`}
                       whileHover={{ x: 5 }}
                     >
-                      <span className="font-bold text-gray-300 w-5 text-right text-xs">#{item.rank}</span>
+                      <span className="font-bold text-gray-300 w-5 text-right text-xs flex-shrink-0">#{item.rank}</span>
                       <Image
                         src={item.user?.avatar_url?.replace('?size=512', '?size=32') || 'https://cdn.discordapp.com/embed/avatars/0.png'}
                         alt={item.user?.username || 'User avatar'}
                         width={28}
                         height={28}
-                        className="rounded-full flex-shrink-0"
+                        className="w-6 h-6 sm:w-7 sm:h-7 rounded-full flex-shrink-0"
                         unoptimized={true}
                         onError={(e) => {
                           e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
                         }}
                       />
-                      <div className="flex-1 truncate">
-                        <span className="text-gray-100 font-medium">{item.user?.displayName || item.user?.username || 'Unknown'}</span>
+                      <div className="flex-1 truncate min-w-0">
+                        <span className="text-gray-100 font-medium truncate block">{item.user?.displayName || item.user?.username || 'Unknown'}</span>
                         {item.user?.displayName && item.user?.displayName !== item.user?.username && (
-                          <span className="text-gray-500 text-xs ml-1">({item.user?.username})</span>
+                          <span className="text-gray-500 text-xs truncate block">({item.user?.username})</span>
                         )}
                       </div>
                       <span className="font-bold text-gray-300 flex-shrink-0 text-xs">{item.value}</span>
@@ -901,43 +882,43 @@ export default function SummaryPage({ userData }) {
 
               {/* Average Message Length Leaderboard */}
               <motion.div
-                className="stat-card p-6 rounded-2xl backdrop-blur-sm"
+                className="stat-card p-4 sm:p-6 rounded-2xl backdrop-blur-sm"
                 variants={itemVariants}
                 whileHover={{ y: -5 }}
               >
-                <div className="mb-6">
-                  <p className="text-gray-400 text-sm mb-2">📝 Ort. Mesaj Uzunluğu</p>
-                  <p className="text-4xl font-black text-pink-400">#{userData.leaderboard.avg_message_length.userRank}</p>
+                <div className="mb-4 sm:mb-6">
+                  <p className="text-gray-400 text-xs sm:text-sm mb-2">📝 Ort. Mesaj Uzunluğu</p>
+                  <p className="text-3xl sm:text-4xl font-black text-pink-400">#{userData.leaderboard.avg_message_length.userRank}</p>
                   <p className="text-gray-500 text-xs mt-2">{userData.leaderboard.avg_message_length.userValue} karakter</p>
                 </div>
 
-                <div className="space-y-2 max-h-80 overflow-y-auto custom-scrollbar">
+                <div className="space-y-2 max-h-72 sm:max-h-80 overflow-y-auto custom-scrollbar">
                   {userData.leaderboard.avg_message_length.context.map((item) => (
                     <motion.div
                       key={item.user_id}
-                      className={`flex items-center gap-3 p-3 rounded-lg transition-all text-sm ${
+                      className={`flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg transition-all text-xs sm:text-sm ${
                         item.isUser
                           ? 'bg-pink-700 border border-pink-400'
                           : 'bg-gray-700 hover:bg-gray-600'
                       }`}
                       whileHover={{ x: 5 }}
                     >
-                      <span className="font-bold text-gray-300 w-5 text-right text-xs">#{item.rank}</span>
+                      <span className="font-bold text-gray-300 w-5 text-right text-xs flex-shrink-0">#{item.rank}</span>
                       <Image
                         src={item.user?.avatar_url?.replace('?size=512', '?size=32') || 'https://cdn.discordapp.com/embed/avatars/0.png'}
                         alt={item.user?.username || 'User avatar'}
                         width={28}
                         height={28}
-                        className="rounded-full flex-shrink-0"
+                        className="w-6 h-6 sm:w-7 sm:h-7 rounded-full flex-shrink-0"
                         unoptimized={true}
                         onError={(e) => {
                           e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
                         }}
                       />
-                      <div className="flex-1 truncate">
-                        <span className="text-gray-100 font-medium">{item.user?.displayName || item.user?.username || 'Unknown'}</span>
+                      <div className="flex-1 truncate min-w-0">
+                        <span className="text-gray-100 font-medium truncate block">{item.user?.displayName || item.user?.username || 'Unknown'}</span>
                         {item.user?.displayName && item.user?.displayName !== item.user?.username && (
-                          <span className="text-gray-500 text-xs ml-1">({item.user?.username})</span>
+                          <span className="text-gray-500 text-xs truncate block">({item.user?.username})</span>
                         )}
                       </div>
                       <span className="font-bold text-gray-300 flex-shrink-0 text-xs">{item.value}</span>
@@ -952,33 +933,33 @@ export default function SummaryPage({ userData }) {
 
       {/* Share/Download Section */}
       <motion.section
-        className="relative py-20 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center"
+        className="relative py-12 sm:py-20 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={containerVariants}
       >
         <motion.h2
-          className="text-4xl sm:text-5xl font-black text-center mb-16 bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent"
+          className="text-2xl sm:text-4xl md:text-5xl font-black text-center mb-8 sm:mb-16 bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent"
           variants={itemVariants}
         >
           Özeti Paylaş
         </motion.h2>
 
-        <div className="flex flex-col lg:flex-row gap-12 items-center max-w-6xl">
+        <div className="flex flex-col lg:flex-row gap-8 sm:gap-12 items-center max-w-6xl w-full">
           {/* Share Card */}
           <motion.div
             id="share-card"
-            className="w-full max-w-xs bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 rounded-lg p-5 border-2 border-blue-500 shadow-2xl"
+            className="w-full max-w-xs bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 rounded-lg p-4 sm:p-5 border-2 border-blue-500 shadow-2xl"
             variants={itemVariants}
           >
-            <div className="text-center space-y-3">
+            <div className="text-center space-y-2 sm:space-y-3">
               {/* Avatar */}
               <motion.div
                 className="flex justify-center"
                 whileHover={{ scale: 1.05 }}
               >
-                <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-blue-400 shadow-lg">
+                <div className="w-16 sm:w-20 h-16 sm:h-20 rounded-full overflow-hidden border-3 border-blue-400 shadow-lg">
                   <Image
                     src={user.avatar_url || 'https://cdn.discordapp.com/embed/avatars/0.png'}
                     alt="User Avatar"
@@ -996,7 +977,7 @@ export default function SummaryPage({ userData }) {
 
               {/* Username */}
               <div className="pt-1">
-                <h3 className="text-lg font-black text-white mb-0.5 break-words">{user.displayName || user.username}</h3>
+                <h3 className="text-base sm:text-lg font-black text-white mb-0.5 break-words">{user.displayName || user.username}</h3>
                 {user.displayName && user.displayName !== user.username && (
                   <p className="text-xs text-gray-400">@{user.username}</p>
                 )}
@@ -1005,7 +986,7 @@ export default function SummaryPage({ userData }) {
               {/* Role Quote Section */}
               <div className="border-l-4 border-purple-500 bg-purple-950 bg-opacity-40 rounded pl-2.5 pr-2.5 py-2 space-y-1">
                 <div className="flex items-baseline gap-1">
-                  <p className="text-sm font-black text-purple-200">{userRole.title}</p>
+                  <p className="text-xs sm:text-sm font-black text-purple-200">{userRole.title}</p>
                 </div>
                 <p className="text-xs text-purple-200 italic leading-tight">
                   "{userRole.description}"
@@ -1013,10 +994,10 @@ export default function SummaryPage({ userData }) {
               </div>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-2 gap-1.5 my-3">
+              <div className="grid grid-cols-2 gap-1.5 my-2 sm:my-3">
                 <div className="bg-blue-600 bg-opacity-40 rounded p-1">
                   <p className="text-gray-300 text-xs mb-0.5">Mesaj</p>
-                  <p className="text-base font-black text-blue-300 truncate">{formatNumber(stats.total)}</p>
+                  <p className="text-sm sm:text-base font-black text-blue-300 truncate">{formatNumber(stats.total)}</p>
                 </div>
                 <div className="bg-purple-600 bg-opacity-40 rounded p-1">
                   <p className="text-gray-300 text-xs mb-0.5">Gün</p>
@@ -1043,12 +1024,12 @@ export default function SummaryPage({ userData }) {
 
           {/* Action Buttons */}
           <motion.div
-            className="flex flex-col gap-4 w-full max-w-sm"
+            className="flex flex-col gap-3 sm:gap-4 w-full max-w-sm"
             variants={containerVariants}
           >
             <motion.button
               onClick={handleShare}
-              className="px-8 py-6 text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl border-2 border-blue-400 text-white shadow-2xl"
+              className="px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl border-2 border-blue-400 text-white shadow-2xl"
               whileHover={{
                 scale: 1.05,
                 boxShadow: '0 0 50px rgba(59, 130, 246, 0.8)',
@@ -1061,7 +1042,7 @@ export default function SummaryPage({ userData }) {
 
             <motion.a
               href="/"
-              className="px-8 py-6 text-lg font-bold bg-gradient-to-r from-gray-700 to-gray-800 rounded-xl border-2 border-gray-600 text-white text-center hover:border-gray-500 transition-all"
+              className="px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg font-bold bg-gradient-to-r from-gray-700 to-gray-800 rounded-xl border-2 border-gray-600 text-white text-center hover:border-gray-500 transition-all"
               whileHover={{
                 scale: 1.05,
               }}

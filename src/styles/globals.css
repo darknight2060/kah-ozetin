@@ -78,6 +78,29 @@ h2 {
   font-weight: 800;
 }
 
+/* Mobile responsive typography */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+    font-weight: 900;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+}
+
 /* Buttons */
 button {
   font-size: 1rem;
@@ -124,6 +147,18 @@ button:active {
 section {
   padding: 4rem 2rem;
   text-align: center;
+}
+
+@media (max-width: 768px) {
+  section {
+    padding: 2rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  section {
+    padding: 1.5rem 1rem;
+  }
 }
 
 /* Animation for smooth entries */
@@ -183,6 +218,25 @@ section {
 
   body {
     font-size: 0.95rem;
+  }
+  
+  section {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+  
+  body {
+    font-size: 0.9rem;
+  }
+  
+  button {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
   }
 }
 
