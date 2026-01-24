@@ -1,1 +1,3 @@
-- deleteduser hepsii kapsadığı içi yalış bilgi veriyor yoksayılmalı
+- özet indir/paylaş
+- ilk mesajın son mesajın falan olsa
+- sunnucudaki rolün (katkın)

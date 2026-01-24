@@ -179,7 +179,7 @@ export default function Home() {
             className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent"
             whileHover={{ scale: 1.05 }}
           >
-            ✨ Sunucu Özeti
+            ✨ KAH Özetin
           </motion.div>
 
           {/* Navigation */}
@@ -231,7 +231,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              Kişiselleştirilmiş sunucu özetinizi oluşturun ve istatistiklerinizi görün
+              Kişiselleştirilmiş KAH özetinizi oluşturun ve istatistiklerinizi görün
             </motion.p>
           </motion.div>
 
@@ -366,7 +366,7 @@ export default function Home() {
             >
               <div className="text-4xl mb-3">🎯</div>
               <h3 className="text-xl font-bold text-white mb-2">İstatistikler</h3>
-              <p className="text-gray-400">Detaylı veriler ve çıkarımlarla sunucu rolünü keşfet</p>
+              <p className="text-gray-400">Detaylı veriler ve çıkarımlarla sunucudaki rolünü keşfet</p>
             </motion.div>
           </motion.div>
         </motion.section>

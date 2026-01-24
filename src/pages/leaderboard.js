@@ -155,7 +155,7 @@ export default function LeaderboardPage({ initialData }) {
         }`}
         variants={itemVariants}
       >
-        <span className={`text-3xl font-black w-10 text-center ${
+        <span className={`text-3xl font-black min-w-16 text-center ${
           isTopThree ? 'text-yellow-400' : 'text-gray-400'
         }`}>
           {isTopThree ? medals[item.rank - 1] : `#${item.rank}`}
@@ -224,90 +224,70 @@ export default function LeaderboardPage({ initialData }) {
         }
       `}</style>
 
-      {/* Header */}
+      {/* Header / Navigation */}
       <motion.div
-        className="min-h-[50vh] flex flex-col items-center justify-center relative overflow-hidden aurora-bg pt-20"
+        className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-gray-800 border-opacity-50"
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 relative flex items-center justify-center">
+          <Link href="/">
+            <motion.div
+              className="absolute left-4 sm:left-6 lg:left-8 flex items-center gap-2 text-gray-400 hover:text-white transition-colors cursor-pointer"
+              whileHover={{ x: -5 }}
+            >
+              <span className="text-2xl">←</span>
+              <span className="hidden sm:inline">Ana Sayfa</span>
+            </motion.div>
+          </Link>
+          <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            Sıralama
+          </h2>
+        </div>
+      </motion.div>
+
+      {/* Content */}
+      <motion.div
+        className="pt-32 pb-24"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
       >
-        <motion.div
-          className="absolute top-20 left-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 z-0"
-          animate={{ y: [0, 50, 0], x: [0, 30, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute bottom-0 right-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 z-0"
-          animate={{ y: [0, -50, 0], x: [0, -30, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        />
-
-        <div className="relative z-10 text-center space-y-4">
-          <motion.h1
-            className="text-6xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
-            variants={itemVariants}
+        {/* Tabs */}
+        <div className="max-w-6xl mx-auto px-4 mb-12">
+          <motion.div 
+            className="flex flex-wrap gap-3 justify-center"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
           >
-            Sıralama
-          </motion.h1>
-
-          <motion.p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto" variants={itemVariants}>
-            Sunucudaki en aktif kullanıcılar
-          </motion.p>
+            {tabConfig.map((tab, idx) => (
+              <motion.button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+                  activeTab === tab.id
+                    ? `bg-gradient-to-r ${tab.gradient} text-white shadow-lg`
+                    : 'glassmorphism text-gray-300 hover:text-white'
+                }`}
+                variants={itemVariants}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {tab.label}
+              </motion.button>
+            ))}
+          </motion.div>
         </div>
-      </motion.div>
 
-      {/* Tabs */}
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <motion.div 
-          className="flex flex-wrap gap-3 justify-center"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {tabConfig.map((tab, idx) => (
-            <motion.button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-6 py-3 rounded-xl font-semibold transition-all ${
-                activeTab === tab.id
-                  ? `bg-gradient-to-r ${tab.gradient} text-white shadow-lg`
-                  : 'glassmorphism text-gray-300 hover:text-white'
-              }`}
-              variants={itemVariants}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {tab.label}
-            </motion.button>
-          ))}
-        </motion.div>
-      </div>
-
-      {/* Main Content */}
-      <motion.div
-        className="max-w-3xl mx-auto px-4 pb-24"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        {/* Tab Title Card */}
+        {/* Main Content */}
         <motion.div
-          className="glassmorphism rounded-2xl p-6 mb-8"
-          variants={itemVariants}
-          initial="hidden"
-          animate="visible"
+          className="max-w-3xl mx-auto px-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
         >
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className={`text-3xl font-bold bg-gradient-to-r ${activeTabConfig.gradient} bg-clip-text text-transparent`}>
-                {activeTabConfig.label}
-              </h2>
-              <p className="text-gray-400 mt-2">
-                Sonsuz kaydırma ile tüm sıralamayı keşfedin
-              </p>
-            </div>
-          </div>
-        </motion.div>
 
         {/* Rankings List */}
         <motion.div
@@ -357,23 +337,7 @@ export default function LeaderboardPage({ initialData }) {
             <p className="text-gray-500 text-lg">Veri yükleniyor...</p>
           )}
         </motion.div>
-      </motion.div>
-
-      {/* Footer */}
-      <motion.div
-        className="flex items-center justify-center py-12 border-t border-gray-700/30"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >
-        <Link href="/">
-          <motion.div 
-            className="text-gray-400 hover:text-blue-400 transition-colors text-sm cursor-pointer flex items-center gap-2"
-            whileHover={{ x: -5 }}
-          >
-            ← Ana Sayfaya Dön
-          </motion.div>
-        </Link>
+        </motion.div>
       </motion.div>
     </div>
   );

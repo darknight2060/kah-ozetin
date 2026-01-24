@@ -263,21 +263,18 @@ export default function SummaryPage({ userData }) {
         animate={{ y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 relative flex items-center justify-center">
           <motion.a
             href="/"
-            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+            className="absolute left-4 sm:left-6 lg:left-8 flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
             whileHover={{ x: -5 }}
           >
             <span className="text-2xl">←</span>
             <span className="hidden sm:inline">Ana Sayfa</span>
           </motion.a>
-          <div className="text-center flex-1">
-            <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              {user.username}
-            </h2>
-          </div>
-          <div className="w-20 sm:w-auto" />
+          <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            {user.username}
+          </h2>
         </div>
       </motion.div>
 
