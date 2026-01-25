@@ -75,7 +75,7 @@ const searchUsers = (query, users) => {
 
 export default function Home() {
   const router = useRouter();
-  const pageTitle = "Kah Özetin - Sunucu İstatistikleri";
+  const pageTitle = "Kah Özetin - Varlığını Keşfet";
   const pageDescription = "Discord sunucusu kullanıcı istatistikleri, sıralamalar ve detaylı analiz";
   
   const [searchQuery, setSearchQuery] = useState("");
@@ -294,7 +294,7 @@ export default function Home() {
                   {/* Suggestions Dropdown */}
                   {isFocused && suggestions.length > 0 && (
                     <motion.div
-                      className="absolute top-full left-4 right-4 md:left-8 md:right-8 mt-2 bg-gray-800/90 backdrop-blur-xl border border-gray-700/50 rounded-xl shadow-2xl z-50 max-h-72 sm:max-h-96 overflow-y-auto"
+                      className="absolute top-full left-2 right-2 md:left-0 md:right-0 bg-gray-800/90 backdrop-blur-xl border border-gray-700/50 rounded-b-xl shadow-2xl z-[9999] max-h-72 sm:max-h-96 overflow-y-auto"
                       initial={{ opacity: 0, y: -10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       transition={{ duration: 0.2 }}
@@ -332,7 +332,7 @@ export default function Home() {
                   {/* Empty State */}
                   {isFocused && searchQuery.trim() && suggestions.length === 0 && (
                     <motion.div
-                      className="absolute top-full left-4 right-4 md:left-8 md:right-8 mt-2 bg-gray-800/90 backdrop-blur-xl border border-gray-700/50 rounded-xl shadow-2xl z-50 p-4 md:p-6 text-center"
+                      className="absolute top-full left-2 right-2 md:left-0 md:right-0 bg-gray-800/90 backdrop-blur-xl border border-gray-700/50 rounded-b-xl shadow-2xl z-[9999] p-4 md:p-6 text-center"
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                     >
@@ -400,44 +400,6 @@ export default function Home() {
                 </motion.div>
               ) : '✨ Özetimi Oluştur'}
             </motion.button>
-          </motion.div>
-
-          {/* Info Cards */}
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-4xl mt-10 md:mt-16 px-2"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-          >
-            {/* Card 1 */}
-            <motion.div
-              className="backdrop-blur-xl bg-gradient-to-br from-purple-600/20 to-purple-600/5 rounded-2xl p-4 md:p-6 border border-purple-500/20 hover:border-purple-500/50 transition"
-              whileHover={{ y: -10, borderColor: "rgba(168, 85, 247, 0.5)" }}
-            >
-              <div className="text-3xl md:text-4xl mb-2 md:mb-3">💬</div>
-              <h3 className="text-lg md:text-xl font-bold text-white mb-1 md:mb-2">Mesajlar</h3>
-              <p className="text-xs md:text-sm text-gray-400">Gönderdiğin toplam mesajları ve istatistiklerini görüntüle</p>
-            </motion.div>
-
-            {/* Card 2 */}
-            <motion.div
-              className="backdrop-blur-xl bg-gradient-to-br from-cyan-600/20 to-cyan-600/5 rounded-2xl p-4 md:p-6 border border-cyan-500/20 hover:border-cyan-500/50 transition"
-              whileHover={{ y: -10, borderColor: "rgba(34, 211, 238, 0.5)" }}
-            >
-              <div className="text-3xl md:text-4xl mb-2 md:mb-3">⏰</div>
-              <h3 className="text-lg md:text-xl font-bold text-white mb-1 md:mb-2">Aktivite</h3>
-              <p className="text-xs md:text-sm text-gray-400">En aktif saatlerini ve günlerini analiz et</p>
-            </motion.div>
-
-            {/* Card 3 */}
-            <motion.div
-              className="backdrop-blur-xl bg-gradient-to-br from-pink-600/20 to-pink-600/5 rounded-2xl p-4 md:p-6 border border-pink-500/20 hover:border-pink-500/50 transition"
-              whileHover={{ y: -10, borderColor: "rgba(236, 72, 153, 0.5)" }}
-            >
-              <div className="text-3xl md:text-4xl mb-2 md:mb-3">🎯</div>
-              <h3 className="text-lg md:text-xl font-bold text-white mb-1 md:mb-2">İstatistikler</h3>
-              <p className="text-xs md:text-sm text-gray-400">Detaylı veriler ve çıkarımlarla sunucudaki rolünü keşfet</p>
-            </motion.div>
           </motion.div>
         </motion.section>
       </main>

@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import html2canvas from 'html2canvas-pro';
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { getUserSummary } from '@/lib/dataLoader';
 import {
   formatDate,
@@ -22,85 +22,27 @@ import {
   getUserRole,
 } from '@/lib/formatters';
 
+// Animation variants for Framer Motion
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.3,
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 100, scale: 0.8 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      duration: 0.8,
-      ease: 'easeOut',
-    },
-  },
-  animate: {
-    y: [0, -10, 0],
-    transition: {
-      duration: 2,
-      repeat: Infinity,
-      ease: 'easeInOut',
-    },
-  },
-};
-
-const floatingVariants = {
-  hidden: { opacity: 0, y: 50 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 1,
+      duration: 0.5,
       ease: 'easeOut',
     },
-  },
-  float: {
-    y: [0, -20, 0],
-    transition: {
-      duration: 3,
-      repeat: Infinity,
-      ease: 'easeInOut',
-    },
-  },
-};
-
-const glitchVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { duration: 0.6 },
-  },
-  animate: {
-    textShadow: [
-      '0 0 0px rgba(59, 130, 246, 0)',
-      '2px 2px 0px rgba(59, 130, 246, 0.8)',
-      '-2px -2px 0px rgba(239, 68, 68, 0.8)',
-      '0 0 0px rgba(59, 130, 246, 0)',
-    ],
-    transition: {
-      duration: 0.3,
-      repeat: Infinity,
-      repeatDelay: 2,
-    },
-  },
-};
-
-const slideInVariants = {
-  hidden: { opacity: 0, x: -100 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.8, ease: 'easeOut' },
   },
 };
 
@@ -167,13 +109,11 @@ export default function SummaryPage({ userData }) {
           <meta name="description" content="Aradığınız kullanıcı bulunamadı" />
         </Head>
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black flex items-center justify-center text-white">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+        <div
           className="text-3xl font-bold text-center"
         >
           <p>Kullanıcı bulunamadı</p>
-        </motion.div>
+        </div>
       </div>
       </>
     );
@@ -219,13 +159,11 @@ export default function SummaryPage({ userData }) {
   if (!userData) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black flex items-center justify-center text-white">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+        <div
           className="text-3xl font-bold"
         >
           Yükleniyor...
-        </motion.div>
+        </div>
       </div>
     );
   }
@@ -309,66 +247,44 @@ export default function SummaryPage({ userData }) {
       `}</style>
 
       {/* Header / Navigation */}
-      <motion.div
+      <div
         className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-gray-800 border-opacity-50"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6 }}
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4 relative flex items-center justify-center">
-          <motion.a
+          <a
             href="/"
             className="absolute left-3 sm:left-6 lg:left-8 top-1/2 -translate-y-1/2 flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
-            whileHover={{ x: -5 }}
           >
             <span className="text-xl sm:text-2xl">←</span>
             <span className="hidden sm:inline text-xs sm:text-base">Ana Sayfa</span>
-          </motion.a>
+          </a>
           <h2 className="text-sm sm:text-lg md:text-xl font-bold text-center px-2 truncate">
             <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               {user.displayName || user.username}
             </span>
           </h2>
         </div>
-      </motion.div>
+      </div>
 
       {/* Hero Section */}
-      <motion.div
+      <div
         className="min-h-screen pt-24 sm:pt-32 pb-12 sm:pb-20 flex flex-col items-center justify-center relative overflow-hidden aurora-bg px-4"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={containerVariants}
       >
         {/* Animated background blobs */}
-        <motion.div
+        <div
           className="absolute top-20 left-10 w-40 sm:w-60 md:w-80 h-40 sm:h-60 md:h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-15 z-0"
-          animate={{
-            y: [0, 50, 0],
-            x: [0, 30, 0],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
-        <motion.div
+        <div
           className="absolute bottom-0 right-10 w-40 sm:w-60 md:w-80 h-40 sm:h-60 md:h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-15 z-0"
-          animate={{
-            y: [0, -50, 0],
-            x: [0, -30, 0],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
         />
 
         <div className="relative z-20 space-y-6 sm:space-y-8 w-full flex flex-col items-center">
           {/* Avatar with gradient border */}
-          <motion.div
+          <div
             className="flex justify-center"
-            variants={floatingVariants}
-            animate="float"
           >
-            <motion.div
+            <div
               className="gradient-border"
-              whileHover={{ scale: 1.08 }}
-              transition={{ type: 'spring', stiffness: 300 }}
             >
               <Image
                 src={user.avatar_url || 'https://cdn.discordapp.com/embed/avatars/0.png'}
@@ -382,13 +298,12 @@ export default function SummaryPage({ userData }) {
                   e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
                 }}
               />
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* Username and display name */}
-          <motion.div
+          <div
             className="text-center space-y-2 sm:space-y-4 w-full"
-            variants={itemVariants}
           >
             <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent break-words">
               {user.displayName || user.username}
@@ -401,9 +316,9 @@ export default function SummaryPage({ userData }) {
             <p className="text-lg sm:text-2xl md:text-3xl text-gray-400 font-light">
               Sunucudaki Hikâyen
             </p>
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Key Metrics Grid */}
       <motion.section
@@ -425,7 +340,7 @@ export default function SummaryPage({ userData }) {
           <motion.div
             className="mb-6 sm:mb-8 stat-card p-6 sm:p-8 rounded-2xl backdrop-blur-sm border-2 border-yellow-400 bg-gradient-to-r from-yellow-900 from-20% via-blue-900 via-50% to-purple-900 to-80%"
             variants={itemVariants}
-            whileHover={{ y: -5, boxShadow: '0 0 40px rgba(250, 204, 21, 0.4)' }}
+            whileHover={{ y: -5 }}
           >
             <div className="text-center">
               <p className="text-gray-300 text-base sm:text-lg mb-2">👑 Sunucudaki Rolün</p>
