@@ -20,6 +20,7 @@ import {
   getTopDays,
   isNightOwl,
   getUserRole,
+  translateDayToTR,
 } from '@/lib/formatters';
 
 // Animation variants for Framer Motion
@@ -392,7 +393,7 @@ export default function SummaryPage({ userData }) {
               whileHover={{ y: -5 }}
             >
               <p className="text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4">📅 En Aktif Gün</p>
-              <p className="text-3xl sm:text-5xl font-black text-purple-400 break-words">{mostActiveDay}</p>
+              <p className="text-3xl sm:text-5xl font-black text-purple-400 break-words">{translateDayToTR(mostActiveDay)}</p>
               <p className="text-gray-500 text-xs mt-3 sm:mt-4">Haftanın Günü</p>
             </motion.div>
           </motion.div>
@@ -929,7 +930,10 @@ export default function SummaryPage({ userData }) {
               </div>
 
               {/* Footer */}
-              <div className="pt-1">
+              <div className="pt-1 flex flex-col items-center gap-1">
+                <p className="text-[11px] text-gray-400 italic font-medium max-w-xs text-center">
+                  *İstatistikler Karargah kanalındaki mesajlara dayalıdır.
+                </p>
                 <p className="text-xs font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                   KAH Özetin — @DarkNight
                 </p>

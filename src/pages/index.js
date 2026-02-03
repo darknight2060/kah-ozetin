@@ -127,6 +127,26 @@ export default function Home() {
     }
   };
 
+  // ...existing code...
+  // Referanslar için id listesi
+  // Referanslar (yorumlar) için state
+  const [references, setReferences] = useState([]);
+  // Referans kullanıcılarını eşleştirmek için
+  const referenceUsers = references
+    .map(ref => {
+      const user = users.find(u => u.id === ref.id);
+      return user ? { ...user, comment: ref.comment } : null;
+    })
+    .filter(Boolean);
+
+  // referanslar.json'u yükle
+  useEffect(() => {
+    fetch("/referanslar.json")
+      .then(res => res.json())
+      .then(data => setReferences(data))
+      .catch(() => setReferences([]));
+  }, [users]);
+
   return (
     <>
       <Head>
@@ -140,7 +160,7 @@ export default function Home() {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
       </Head>
-    <div className={`${geistSans.className} ${geistMono.className}`}>
+    <div className={`${geistSans.className} ${geistMono.className}`}> 
       {/* Gradient Background */}
       <div className="fixed inset-0 bg-gradient-to-b from-gray-950 via-gray-900 to-black z-0"></div>
 
@@ -220,7 +240,7 @@ export default function Home() {
       <main className="relative z-10 min-h-screen flex flex-col">
         {/* Hero Section */}
         <motion.section
-          className="flex-1 flex flex-col items-center justify-center pt-16 md:pt-20 pb-8 md:pb-12 px-4"
+          className="min-h-screen flex flex-col items-center justify-center pt-16 md:pt-20 pb-8 md:pb-12 px-4"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
@@ -399,11 +419,33 @@ export default function Home() {
                   Yükleniyor...
                 </motion.div>
               ) : '✨ Özetimi Oluştur'}
-            </motion.button>
-          </motion.div>
-        </motion.section>
-      </main>
-    </div>
+              </motion.button>
+            </motion.div>
+          </motion.section>
+
+          {/* Referanslar Bölümü */}
+          <motion.section className="max-w-3xl mx-auto mt-20 mb-24 px-6 py-10 from-purple-900 via-gray-900 to-black rounded-2xl shadow-2xl border border-purple-500"
+            initial={{ opacity: 0, y: -10, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.4 }}
+          >
+            <h2 className="text-3xl font-extrabold mb-10 gradient-text text-center tracking-tight">Onlar Ne Diyor?</h2>
+            <motion.div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 justify-items-center">
+              {referenceUsers.map(user => (
+                <motion.div key={user.id} className="flex flex-col items-center glass rounded-xl p-6 w-full max-w-xs shadow-lg hover:scale-105 transition-transform">
+                  <img
+                    src={user.avatar}
+                    alt={user.displayName || user.username}
+                    className="w-14 h-14 rounded-full mb-3 border-2 border-gray-700 shadow-sm"
+                  />
+                  <span className="text-base font-semibold text-white mb-2">{user.displayName || user.username}</span>
+                  <p className="text-sm text-gray-300 text-center italic leading-relaxed">“{user.comment}”</p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.section>
+        </main>
+      </div>
     </>
   );
 }

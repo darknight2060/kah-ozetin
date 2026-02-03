@@ -1,4 +1,20 @@
 /**
+ * İngilizce gün adını Türkçeye çevirir
+ */
+export function translateDayToTR(day) {
+  const days = {
+    'Monday': 'Pazartesi',
+    'Tuesday': 'Salı',
+    'Wednesday': 'Çarşamba',
+    'Thursday': 'Perşembe',
+    'Friday': 'Cuma',
+    'Saturday': 'Cumartesi',
+    'Sunday': 'Pazar',
+    'Unknown': 'Bilinmiyor'
+  };
+  return days[day] || day;
+}
+/**
  * Format date strings
  */
 export function formatDate(dateString) {
